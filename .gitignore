@@ -23,3 +23,6 @@ Thumbs.db
 # Arquivos gerados em execução (entregas, materiais e documentos emitidos)
 uploads/
 documentos/
+
+# Esquema completo do banco, citado na documentacao
+!docs/esquema_mysql.sql
