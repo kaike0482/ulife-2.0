@@ -442,7 +442,7 @@ public class TelaPrincipal extends JFrame {
         JPanel topo = new JPanel(new BorderLayout());
         topo.setOpaque(false);
         topo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        topo.add(Estilo.texto(s.titulo, 200, Font.BOLD, 18, Estilo.TX), BorderLayout.CENTER);
+        topo.add(Estilo.texto(s.titulo, 150, Font.BOLD, 18, Estilo.TX), BorderLayout.CENTER);
         BotaoIcone fechar = new BotaoIcone(Tipo.LEFT, 14, false);
         fechar.setPreferredSize(new Dimension(26, 26));
         fechar.addActionListener(e -> fecharFly());
@@ -450,10 +450,11 @@ public class TelaPrincipal extends JFrame {
         fc.setOpaque(false);
         fc.add(fechar);
         topo.add(fc, BorderLayout.EAST);
+        topo.setMaximumSize(new Dimension(Integer.MAX_VALUE, topo.getPreferredSize().height));
         flyout.add(topo);
         flyout.add(Box.createVerticalStrut(6));
 
-        JLabel d = Estilo.texto(s.desc, 240, Font.PLAIN, 13, Estilo.MU);
+        JLabel d = Estilo.texto(s.desc, 175, Font.PLAIN, 13, Estilo.MU);
         d.setAlignmentX(Component.LEFT_ALIGNMENT);
         flyout.add(d);
         flyout.add(Box.createVerticalStrut(16));
@@ -466,7 +467,7 @@ public class TelaPrincipal extends JFrame {
         for (int aba : s.fly) {
             final int abaIdx = aba;
             boolean atual = secAtual == idx && abaAtual == aba;
-            JLabel l = new JLabel("<html><body style='width:230px'>" + Estilo.esc(s.abas[aba]) + "</body></html>");
+            JLabel l = new JLabel("<html><body style='width:170px'>" + Estilo.esc(s.abas[aba]) + "</body></html>");
             l.setFont(Estilo.fonte(atual ? Font.BOLD : Font.PLAIN, 14));
             l.setForeground(atual ? Estilo.PD : Estilo.AC);
             l.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
