@@ -98,7 +98,7 @@ public class PainelProjetos extends JPanel {
         sp.getViewport().setBackground(Estilo.CARD);
         sp.setPreferredSize(new Dimension(800, 360));
 
-        JPanel acoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel acoes = Estilo.acoes(10);
         acoes.setOpaque(false);
         JButton alterar = Estilo.neutro("Alterar");
         alterar.addActionListener(e -> alterarSelecionado());
@@ -106,7 +106,7 @@ public class PainelProjetos extends JPanel {
         excluir.addActionListener(e -> excluirSelecionado());
         acoes.add(alterar);
         acoes.add(excluir);
-        acoes.add(Estilo.rotulo("Selecione uma linha (ou dê dois cliques para alterar).", Font.PLAIN, 13, Estilo.MU));
+        acoes.add(Estilo.rotulo("Selecione uma linha para alterar ou excluir.", Font.PLAIN, 13, Estilo.MU));
 
         p.add(barra, BorderLayout.NORTH);
         p.add(sp, BorderLayout.CENTER);
@@ -208,7 +208,7 @@ public class PainelProjetos extends JPanel {
         g.gridwidth = 2;
         c.add(lblErro, g);
 
-        JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        JPanel btns = Estilo.acoes(12);
         btns.setOpaque(false);
         JButton salvar = Estilo.primario("Salvar");
         salvar.addActionListener(e -> salvar());

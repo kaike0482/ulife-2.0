@@ -40,6 +40,7 @@ public final class Estilo {
         JLabel l = new JLabel(texto);
         l.setFont(fonte(estilo, tamanho));
         l.setForeground(cor);
+        l.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4)); // evita corte da última letra
         return l;
     }
 
@@ -130,6 +131,23 @@ public final class Estilo {
         }
     }
 
+    /** Linha de botões/itens alinhada à esquerda, sem o recuo lateral que o FlowLayout acrescenta. */
+    public static JPanel acoes(int espaco) {
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, espaco, 0));
+        p.setOpaque(false);
+        p.setBorder(BorderFactory.createEmptyBorder(0, -espaco, 0, 0));
+        return p;
+    }
+
+    /** Cartão de indicador: título, valor grande e uma linha de apoio. */
+    public static JComponent indicador(String titulo, String valor, String nota, Color cor) {
+        Cartao c = new Cartao(new BorderLayout(0, 4), 18);
+        c.add(rotulo(titulo, Font.PLAIN, 13, MU), BorderLayout.NORTH);
+        c.add(rotulo(valor, Font.BOLD, 26, cor), BorderLayout.CENTER);
+        c.add(rotulo(nota == null ? " " : nota, Font.PLAIN, 12, MU), BorderLayout.SOUTH);
+        return c;
+    }
+
     // ------------------------------------------------------------------ barra de progresso
 
     public static JComponent barra(int percentual, Color cor) {
@@ -183,10 +201,12 @@ public final class Estilo {
         Color vmBg = new Color(0xf9dede), vm = new Color(0xa32b2b);
         switch (s) {
             case "Entregue": case "Regular": case "Validada": case "Assinado": case "Concluído":
+            case "Paga": case "Confirmado": case "CONFIRMADO": case "Presente": case "Aprovado": case "Lançada":
                 return new Color[]{vdBg, vd};
-            case "Pendente": case "Em andamento":
+            case "Pendente": case "Em andamento": case "Pendente de lançamento": case "A lançar":
                 return new Color[]{amBg, am};
-            case "Cancelado":
+            case "Cancelado": case "Cancelada": case "Vencida": case "Ausente": case "Reprovado":
+            case "Frequência baixa":
                 return new Color[]{vmBg, vm};
             default: // Em breve, Em análise, Planejado
                 return new Color[]{azulBg, azul};
@@ -230,9 +250,13 @@ public final class Estilo {
                 String nome = tb.getColumnName(c);
                 for (String col : colunasTag) {
                     if (col.equals(nome) && v != null) {
-                        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 7));
+                        JPanel p = new JPanel(new GridBagLayout());
                         p.setBackground(sel ? PL : CARD);
-                        p.add(new Tag(v.toString()));
+                        GridBagConstraints gc = new GridBagConstraints();
+                        gc.anchor = GridBagConstraints.WEST;
+                        gc.insets = new Insets(0, 12, 0, 0);
+                        gc.weightx = 1;
+                        p.add(new Tag(v.toString()), gc);
                         return p;
                     }
                 }

@@ -108,7 +108,7 @@ public final class Paginas {
     }
 
     private static JComponent limitar(JComponent c, int largura) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel p = Estilo.acoes(0);
         p.setOpaque(false);
         c.setPreferredSize(new Dimension(largura, c.getPreferredSize().height));
         p.add(c);
@@ -117,7 +117,7 @@ public final class Paginas {
 
     private static JComponent progresso(Tipo tipo, String titulo, String desc, int pct, String nota) {
         Estilo.Cartao c = new Estilo.Cartao(new BorderLayout(0, 8), 20);
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
+        JPanel top = Estilo.acoes(14);
         top.setOpaque(false);
         top.add(new JLabel(ic(tipo, 28)));
         top.add(Estilo.rotulo(titulo, Font.BOLD, 16, Estilo.TX));

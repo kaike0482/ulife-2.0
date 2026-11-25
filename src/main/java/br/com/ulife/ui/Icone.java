@@ -7,7 +7,7 @@ import java.awt.geom.*;
 /** Ícones vetoriais desenhados com Java2D (mesmos desenhos do protótipo HTML, grade 24x24). */
 public class Icone implements Icon {
 
-    public enum Tipo { MON, CLA, BOOK, CAP, BAG, LIB, MAIL, DOC, STAR, LINK, CHAT, BELL, USERS, FLAG, PIN, USER, ACC, DOWN, LEFT }
+    public enum Tipo { MON, CLA, BOOK, CAP, BAG, LIB, MAIL, DOC, STAR, LINK, CHAT, BELL, USERS, FLAG, PIN, USER, ACC, DOWN, LEFT, CARD, HOME, CAL }
 
     private final Tipo tipo;
     private final int tamanho;
@@ -163,6 +163,23 @@ public class Icone implements Icon {
                 poly(g, false, 7, 10.5, 12, 11.5, 17, 10.5);
                 linha(g, 12, 11.5, 12, 15);
                 poly(g, false, 10, 19, 12, 15, 14, 19);
+                break;
+            case CARD:
+                g.draw(new RoundRectangle2D.Double(2, 5, 20, 14, 3, 3));
+                linha(g, 2, 10, 22, 10);
+                linha(g, 6, 15, 11, 15);
+                break;
+            case HOME:
+                poly(g, false, 3, 11, 12, 3, 21, 11);
+                poly(g, false, 5, 9.5, 5, 21, 19, 21, 19, 9.5);
+                rect(g, 10, 14, 4, 7);
+                break;
+            case CAL:
+                rect(g, 3, 5, 18, 16);
+                linha(g, 3, 10, 21, 10);
+                linha(g, 8, 3, 8, 7);
+                linha(g, 16, 3, 16, 7);
+                poly(g, false, 8, 15, 11, 18, 16, 13);
                 break;
             case DOWN:
                 poly(g, false, 6, 9, 12, 15, 18, 9);

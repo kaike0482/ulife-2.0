@@ -29,7 +29,7 @@ public class PainelUsuarios extends JPanel {
     // lista
     private final JTextField txtBusca = Estilo.campo();
     private final DefaultTableModel modelo = new DefaultTableModel(
-            new String[]{"Usuário", "Nome", "E-mail", "Telefone"}, 0) {
+            new String[]{"Usuário", "Nome", "E-mail", "Telefone", "Perfil"}, 0) {
         @Override public boolean isCellEditable(int r, int c) { return false; }
     };
     private final JTable tabela = new JTable(modelo);
@@ -42,6 +42,7 @@ public class PainelUsuarios extends JPanel {
     private final JTextField txtEmail = Estilo.campo();
     private final JTextField txtTelefone = Estilo.campo();
     private final JPasswordField txtSenha = Estilo.campoSenha();
+    private final JComboBox<Usuario.Perfil> cmbPerfil = new JComboBox<>(Usuario.Perfil.values());
     private final JLabel lblErro = Estilo.rotulo(" ", Font.PLAIN, 13, Estilo.ERRO);
     private Usuario emEdicao; // null = novo
 
@@ -94,7 +95,7 @@ public class PainelUsuarios extends JPanel {
         sp.getViewport().setBackground(Estilo.CARD);
         sp.setPreferredSize(new Dimension(800, 360));
 
-        JPanel acoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel acoes = Estilo.acoes(10);
         acoes.setOpaque(false);
         JButton alterar = Estilo.neutro("Alterar");
         alterar.addActionListener(e -> alterarSelecionado());
@@ -102,7 +103,7 @@ public class PainelUsuarios extends JPanel {
         excluir.addActionListener(e -> excluirSelecionado());
         acoes.add(alterar);
         acoes.add(excluir);
-        acoes.add(Estilo.rotulo("Selecione uma linha (ou dê dois cliques para alterar).", Font.PLAIN, 13, Estilo.MU));
+        acoes.add(Estilo.rotulo("Selecione uma linha para alterar ou excluir.", Font.PLAIN, 13, Estilo.MU));
 
         p.add(barra, BorderLayout.NORTH);
         p.add(sp, BorderLayout.CENTER);
@@ -119,7 +120,8 @@ public class PainelUsuarios extends JPanel {
         }
         modelo.setRowCount(0);
         for (Usuario u : exibidos) {
-            modelo.addRow(new Object[]{u.getUsuario(), u.getNome(), u.getEmail(), u.getTelefone()});
+            modelo.addRow(new Object[]{u.getUsuario(), u.getNome(), u.getEmail(), u.getTelefone(),
+                    rotuloPerfil(u.getPerfil())});
         }
     }
 
@@ -179,13 +181,21 @@ public class PainelUsuarios extends JPanel {
         campo(c, g, 0, 1, "E-mail", txtEmail);
         campo(c, g, 1, 1, "Telefone  (ex.: (11) 99999-0000)", txtTelefone);
         campo(c, g, 0, 2, "Senha", txtSenha);
+        cmbPerfil.setFont(Estilo.fonte(Font.PLAIN, 14));
+        cmbPerfil.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> l, Object v, int i, boolean s, boolean f) {
+                return super.getListCellRendererComponent(l, v == null ? "" : rotuloPerfil((Usuario.Perfil) v), i, s, f);
+            }
+        });
+        campo(c, g, 1, 2, "Perfil de acesso", cmbPerfil);
 
         g.gridx = 0;
         g.gridy = 3;
         g.gridwidth = 2;
         c.add(lblErro, g);
 
-        JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        JPanel btns = Estilo.acoes(12);
         btns.setOpaque(false);
         JButton salvar = Estilo.primario("Salvar");
         salvar.addActionListener(e -> salvar());
@@ -201,6 +211,14 @@ public class PainelUsuarios extends JPanel {
         wrap.add(c, BorderLayout.NORTH);
         p.add(wrap, BorderLayout.CENTER);
         return p;
+    }
+
+    static String rotuloPerfil(Usuario.Perfil p) {
+        if (p == null) {
+            return "";
+        }
+        String n = p.name();
+        return n.charAt(0) + n.substring(1).toLowerCase();
     }
 
     static void campo(JPanel painel, GridBagConstraints g, int col, int lin, String rotulo, JComponent campo) {
@@ -225,6 +243,7 @@ public class PainelUsuarios extends JPanel {
             txtNome.setText("");
             txtEmail.setText("");
             txtTelefone.setText("");
+            cmbPerfil.setSelectedItem(Usuario.Perfil.ALUNO);
         } else {
             lblTituloForm.setText("Alterar usuário");
             txtUsuario.setText(u.getUsuario());
@@ -232,6 +251,7 @@ public class PainelUsuarios extends JPanel {
             txtNome.setText(u.getNome());
             txtEmail.setText(u.getEmail());
             txtTelefone.setText(u.getTelefone());
+            cmbPerfil.setSelectedItem(u.getPerfil());
         }
         cards.show(raiz, "form");
         txtNome.requestFocusInWindow();
@@ -244,6 +264,7 @@ public class PainelUsuarios extends JPanel {
         String telefone = txtTelefone.getText().trim();
         String senha = new String(txtSenha.getPassword());
         boolean novo = emEdicao == null;
+        Usuario.Perfil perfil = (Usuario.Perfil) cmbPerfil.getSelectedItem();
 
         String erro = null;
         if (usuario.isEmpty() || nome.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
@@ -258,6 +279,9 @@ public class PainelUsuarios extends JPanel {
             erro = "Informe a senha.";
         } else if (!senha.isEmpty() && senha.length() < 6) {
             erro = "A senha deve ter ao menos 6 caracteres.";
+        } else if (!novo && emEdicao.getUsuarioId().equals(logado.getUsuarioId())
+                && perfil != emEdicao.getPerfil()) {
+            erro = "Você não pode alterar o seu próprio perfil de acesso.";
         }
         if (erro != null) {
             lblErro.setText(erro);
@@ -274,9 +298,9 @@ public class PainelUsuarios extends JPanel {
                 return;
             }
             if (novo) {
-                dao.inserir(usuario, nome, email, telefone, senha, Usuario.Perfil.ALUNO);
+                dao.inserir(usuario, nome, email, telefone, senha, perfil);
             } else {
-                dao.atualizar(emEdicao.getUsuarioId(), nome, email, telefone, senha);
+                dao.atualizar(emEdicao.getUsuarioId(), nome, email, telefone, senha, perfil);
             }
         } catch (RuntimeException ex) {
             lblErro.setText(ex.getMessage());

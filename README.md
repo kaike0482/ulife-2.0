@@ -11,6 +11,28 @@ HTML "Portal do Aluno" (`prototipo/portal-do-aluno.html`).
   nome do responsável, telefone, data da criação e status.
 - Demais telas do portal (Aulas, Curso, Serviços, Comunicação...) reproduzem o protótipo, com conteúdo ilustrativo.
 
+## Perfis de acesso (contas de demonstração)
+| Perfil | Usuário | Senha | O que vê |
+|---|---|---|---|
+| Aluno | `aluno` | `aluno123` | Aulas, **Pagamentos**, Curso, Academia, Serviços, Comunicação |
+| Professor | `professor` | `prof123` | Início (pendências), **Aulas** (quadro semanal das turmas dele), Minhas turmas, **Lançar notas** (A1–A3), **Lançar frequência** (sugestão automática pela videochamada) |
+| Coordenador | `coordenador` | `coord123` | Início (indicadores), **Turmas** (cadastro e matrículas), **Pagamentos** (cobranças, inadimplência e recebimentos), **Usuários** (cria contas e define perfis), Projetos ODS |
+
+O cabeçalho muda conforme o perfil: "Portal do Aluno" (botão **Pagamentos**), "Portal do Professor" (botão
+**Frequência**, com as aulas a lançar) e "Portal da Coordenação" (botão **Inadimplentes**). O sino mostra as
+notificações do papel de cada um.
+| Coordenador (admin) | `admin` | `admin123` | Igual ao coordenador |
+
+Também é possível entrar com o e-mail (ex.: `aluno@ulife.com`). As contas são criadas automaticamente
+quando ainda não existem; contas já existentes no banco não são alteradas.
+
+## Pagamentos do aluno (MVP)
+O botão laranja **Pagamentos** fica no cabeçalho (com a quantidade de mensalidades pendentes), há um ícone
+dedicado no menu lateral e um aviso com atalho nas demais telas. Na tela, o aluno vê o resumo (em aberto,
+vencidas, pagas), a lista de mensalidades e paga por **PIX** (QR Code real + copia e cola no padrão BR Code) ou
+**boleto** (linha digitável). O pagamento é um **ambiente de demonstração**: nenhum valor real é cobrado e o botão
+"Já paguei" simula a confirmação do banco. O histórico mostra o protocolo de cada transação.
+
 ## Como rodar
 1. Suba o MySQL: `docker compose up -d` (usa `docker-compose.yml`; ajuste `src/main/resources/database.properties`
    se o seu container tiver outro host/porta/senha).

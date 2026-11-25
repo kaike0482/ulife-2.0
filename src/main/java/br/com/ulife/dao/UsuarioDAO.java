@@ -97,6 +97,7 @@ public class UsuarioDAO {
             stmt.executeUpdate();
             try (ResultSet keys = stmt.getGeneratedKeys()) {
                 if (keys.next()) {
+                    SchemaInitializer.sincronizarPapeis();
                     return findById(keys.getInt(1)).orElse(null);
                 }
             }
@@ -107,9 +108,10 @@ public class UsuarioDAO {
     }
 
     /** Alteração. Se novaSenha for vazia, a senha atual é mantida. */
-    public void atualizar(Integer id, String nome, String email, String telefone, String novaSenha) {
+    public void atualizar(Integer id, String nome, String email, String telefone, String novaSenha,
+                          Usuario.Perfil perfil) {
         boolean trocaSenha = novaSenha != null && !novaSenha.isEmpty();
-        String sql = "UPDATE USUARIO SET nome = ?, email = ?, telefone = ?"
+        String sql = "UPDATE USUARIO SET nome = ?, email = ?, telefone = ?, perfil = ?"
                 + (trocaSenha ? ", senha_hash = ?" : "") + " WHERE usuario_id = ?";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -117,6 +119,7 @@ public class UsuarioDAO {
             stmt.setString(i++, nome);
             stmt.setString(i++, email);
             stmt.setString(i++, telefone);
+            stmt.setString(i++, perfil.name());
             if (trocaSenha) {
                 stmt.setString(i++, BCrypt.hashpw(novaSenha, BCrypt.gensalt()));
             }
@@ -125,6 +128,25 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao alterar usuário: " + e.getMessage(), e);
         }
+        SchemaInitializer.sincronizarPapeis();
+    }
+
+    /** Usuários ativos de um perfil (ex.: professores para escolher na turma). */
+    public List<Usuario> listarPorPerfil(Usuario.Perfil perfil) {
+        List<Usuario> lista = new ArrayList<>();
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM USUARIO WHERE perfil = ? AND ativo = TRUE ORDER BY nome")) {
+            stmt.setString(1, perfil.name());
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapResultSetToUsuario(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao consultar usuários: " + e.getMessage(), e);
+        }
+        return lista;
     }
 
     /** Exclusão. */

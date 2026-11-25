@@ -9,7 +9,8 @@ USE ulife;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS USUARIO (
     usuario_id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(30) NOT NULL UNIQUE,
+    usuario VARCHAR(30) NOT NULL,
+    UNIQUE KEY uk_usuario_login (usuario),
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     telefone VARCHAR(20),
@@ -120,6 +121,8 @@ CREATE TABLE IF NOT EXISTS FREQUENCIA (
     aula_data DATE NOT NULL,
     presenca BOOLEAN NOT NULL DEFAULT FALSE,
     justificativa VARCHAR(200),
+    minutos_conectado INT NULL,
+    lancada BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE KEY uk_matricula_data (matricula_id, aula_data),
     CONSTRAINT fk_frequencia_matricula FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -130,10 +133,11 @@ CREATE TABLE IF NOT EXISTS FREQUENCIA (
 CREATE TABLE IF NOT EXISTS NOTA (
     nota_id INT AUTO_INCREMENT PRIMARY KEY,
     matricula_id INT NOT NULL,
-    tarefa_id INT NOT NULL,
+    tarefa_id INT NULL,
     valor DECIMAL(4,2) NOT NULL,
     tipo_avaliacao VARCHAR(20) NOT NULL, -- ex: N1, N2, N3, Trabalho
     data_lancamento DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_nota_aval (matricula_id, tipo_avaliacao),
     CONSTRAINT fk_nota_matricula FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id) ON DELETE CASCADE,
     CONSTRAINT fk_nota_tarefa FOREIGN KEY (tarefa_id) REFERENCES TAREFA(tarefa_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -143,13 +147,15 @@ CREATE TABLE IF NOT EXISTS NOTA (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS COBRANCA (
     cobranca_id INT AUTO_INCREMENT PRIMARY KEY,
-    matricula_id INT NOT NULL,
+    matricula_id INT NULL,
+    usuario_id INT NULL,
     descricao VARCHAR(150) NOT NULL,
     valor DECIMAL(10,2) NOT NULL,
     vencimento DATE NOT NULL,
     status ENUM('ABERTA', 'PAGA', 'VENCIDA', 'CANCELADA') NOT NULL DEFAULT 'ABERTA',
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_cobranca_matricula FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id) ON DELETE CASCADE
+    CONSTRAINT fk_cobranca_matricula FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id) ON DELETE CASCADE,
+    CONSTRAINT fk_cobranca_usuario FOREIGN KEY (usuario_id) REFERENCES USUARIO(usuario_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------

@@ -47,7 +47,7 @@ public class QuadroAulas extends JPanel {
         LocalDate sabado = segunda.plusDays(5);
 
         // Cabeçalho da semana
-        JPanel wk = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
+        JPanel wk = Estilo.acoes(14);
         wk.setOpaque(false);
         String mes = segunda.getMonthValue() == sabado.getMonthValue()
                 ? MESES[segunda.getMonthValue() - 1]
