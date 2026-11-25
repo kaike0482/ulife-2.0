@@ -1,31 +1,33 @@
-# Ulife 2.0 - Plataforma Acadêmica Integrada
+# Ulife 2.0 - Plataforma Acadêmica Integrada (Projeto A3)
 
-## Descrição
-Projeto de plataforma acadêmica para ensino híbrido, integrando autenticação SSO, cronogramas, materiais didáticos, submissão de atividades, controle de frequência, notas, pagamentos (PIX/boleto) e suporte automatizado.
+Aplicação **desktop em Java (javax.swing) com MySQL**, com controle de acesso e o visual do protótipo
+HTML "Portal do Aluno" (`prototipo/portal-do-aluno.html`).
 
-## Tecnologias
-- **Frontend**: Java Swing (aplicação desktop)
-- **Backend**: Java (JDBC) + MySQL
-- **Banco de Dados**: MySQL (container Docker)
-- **Requisitos**:
-  - Autenticação unificada (RF-001)
-  - Cronograma e renderização de aulas em até 2,0s (RF-002)
-  - Upload de tarefas com protocolo digital (RF-003)
-  - Registro de frequência e notas (RF-004)
-  - Pagamentos via PIX (QR Code) e boleto (RF-006)
+## Requisitos do enunciado atendidos
+- Interface gráfica com `javax.swing`; banco de dados **MySQL** (container Docker).
+- **Controle de acesso:** só usuários autenticados entram (senha com hash BCrypt).
+- **Usuários** (menu *Usuários*): cadastro, alteração, consulta e exclusão — usuário, nome, e-mail, senha, telefone.
+- **Projetos** (menu *Projetos ODS*): cadastro, alteração, consulta e exclusão — código, descrição, ODS (1 a 17),
+  nome do responsável, telefone, data da criação e status.
+- Demais telas do portal (Aulas, Curso, Serviços, Comunicação...) reproduzem o protótipo, com conteúdo ilustrativo.
 
-## Arquitetura
-- **Camadas**:
-  - Apresentação: Swing (telas de login, painel acadêmico, formulários)
-  - Aplicação: Lógica de negócios (validação de upload, cálculo de média)
-  - Dados: Conexão JDBC com MySQL
-- **Fluxo de Autenticação**:
-  1. Login SSO via App/Portal → validação no MySQL
-  2. Token SSO validado pelo provedor externo
-  3. Sessão iniciada para acesso aos módulos
+## Como rodar
+1. Suba o MySQL: `docker compose up -d` (usa `docker-compose.yml`; ajuste `src/main/resources/database.properties`
+   se o seu container tiver outro host/porta/senha).
+2. Compile e execute (JDK 17+):
+   ```
+   .\mvnw.cmd -q package
+   java -cp "target/classes;target/lib/*" br.com.ulife.Main
+   ```
+3. Ao abrir, o app **ajusta o banco automaticamente** (`SchemaInitializer`): adiciona as colunas `usuario` e
+   `telefone` em `USUARIO`, cria a tabela `PROJETO` e, se o banco estiver sem usuários, cria `admin` / `admin123`.
+   Em bancos já existentes, o login de cada usuário passa a ser a parte do e-mail antes do `@`
+   (ex.: `admin@ulife.com` → `admin`); as senhas não mudam. Também é possível entrar com o e-mail.
 
-## Próximos Passos
-1. Instalar WSL2 para usar Docker Desktop
-2. Configurar container MySQL via docker-compose.yml
-3. Desenvolver tela de login com Swing
-4. Implementar conexão com o banco de dados
+Para um banco novo do zero, `bd.sql` já contém o esquema completo.
+
+## Estrutura
+- `model/` — `Usuario`, `Projeto` (com a lista dos 17 ODS)
+- `dao/` — `DatabaseConnection`, `UsuarioDAO`, `ProjetoDAO`, `SchemaInitializer`
+- `ui/` — `TelaLogin`, `TelaPrincipal` (cabeçalho, rail, painel flutuante, abas), `PainelUsuarios`,
+  `PainelProjetos`, `QuadroAulas`, `Paginas`, `Estilo`, `Icone`

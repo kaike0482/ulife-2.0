@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 
 public class Usuario {
     private Integer usuarioId;
+    private String usuario;
     private String nome;
     private String email;
+    private String telefone;
     private String senhaHash;
     private Perfil perfil;
     private Boolean ativo;
@@ -18,25 +20,20 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(Integer usuarioId, String nome, String email, String senhaHash, Perfil perfil, Boolean ativo, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
-        this.usuarioId = usuarioId;
-        this.nome = nome;
-        this.email = email;
-        this.senhaHash = senhaHash;
-        this.perfil = perfil;
-        this.ativo = ativo;
-        this.criadoEm = criadoEm;
-        this.atualizadoEm = atualizadoEm;
-    }
-
     public Integer getUsuarioId() { return usuarioId; }
     public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
+
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
 
     public String getSenhaHash() { return senhaHash; }
     public void setSenhaHash(String senhaHash) { this.senhaHash = senhaHash; }
@@ -55,12 +52,7 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "usuarioId=" + usuarioId +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                ", perfil=" + perfil +
-                ", ativo=" + ativo +
-                '}';
+        return "Usuario{usuarioId=" + usuarioId + ", usuario='" + usuario + "', nome='" + nome
+                + "', email='" + email + "', perfil=" + perfil + ", ativo=" + ativo + '}';
     }
 }

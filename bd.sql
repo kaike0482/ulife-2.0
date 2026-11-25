@@ -9,8 +9,10 @@ USE ulife;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS USUARIO (
     usuario_id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(30) NOT NULL UNIQUE,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
+    telefone VARCHAR(20),
     senha_hash VARCHAR(255) NOT NULL,
     perfil ENUM('ALUNO', 'PROFESSOR', 'SECRETARIA', 'TESOURARIA', 'COORDENADOR') NOT NULL DEFAULT 'ALUNO',
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -197,6 +199,21 @@ CREATE TABLE IF NOT EXISTS CHAMADO (
     data_fechamento DATETIME,
     protocolo_atendimento VARCHAR(50),
     CONSTRAINT fk_chamado_aluno FOREIGN KEY (aluno_id) REFERENCES ALUNO(aluno_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Tabela PROJETO (Projeto A3 - projetos ligados aos ODS)
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS PROJETO (
+    projeto_id INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    descricao VARCHAR(500) NOT NULL,
+    ods TINYINT NOT NULL,
+    responsavel VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    data_criacao DATE NOT NULL,
+    status ENUM('PLANEJADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO') NOT NULL DEFAULT 'PLANEJADO',
+    CONSTRAINT ck_projeto_ods CHECK (ods BETWEEN 1 AND 17)
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal do Aluno – Quadro de Aulas</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--p:#1c4f8c;--pd:#0d2c54;--ac:#2f6fd0;--pl:#e3ecf9;--bg:#e9eef5;--card:#fff;--hd:#fff;--tx:#14233a;--mu:#6b7a90;--bd:#c9d4e3;--st:#eef2f8;--or:#f29b38;--tq:#2fb8ac;--ok:#1f7a45}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,Arial,sans-serif}
+html,body{height:100%;width:100%}body{background:var(--bg);color:var(--tx)}
+.hide{display:none!important}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===================== LOGIN ===================== */
+#login{height:100%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 20%,#4a80c9,#1c4f8c 55%,#0d2c54 100%);overflow:hidden;position:relative}
+#login::before{content:"";position:fixed;top:-20%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 60% 30%,rgba(255,255,255,.25),transparent 40%),radial-gradient(circle at 20% 70%,rgba(255,255,255,.15),transparent 45%);filter:blur(60px)}
+.lc{position:relative;z-index:1;width:460px;max-width:90vw;padding:60px 50px 50px;text-align:center}
+.ic{width:100px;height:100px;margin:0 auto 25px;border-radius:50%;background:rgba(13,44,84,.55);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center}
+.ic svg{width:50px;height:50px;fill:none;stroke:#fff;stroke-width:1.5}
+h1.lt{color:#eaf1fb;font-weight:400;font-size:26px;letter-spacing:6px;margin-bottom:45px;text-transform:uppercase}
+.fg{display:flex;align-items:center;margin-bottom:30px;border-bottom:1.5px solid rgba(255,255,255,.65);padding-bottom:10px}
+.fg svg{width:20px;height:20px;fill:none;stroke:#eef3fa;stroke-width:1.6;margin-right:14px;flex-shrink:0}
+.fg input{flex:1;background:transparent;border:none;outline:none;font-size:17px;color:#fff;padding:4px 0}
+.fg input::placeholder{color:rgba(255,255,255,.85);font-weight:300}
+.or{display:flex;justify-content:space-between;margin-bottom:35px;font-size:14px;color:#eaf1fb}
+.or label{display:flex;gap:8px;align-items:center}.or a{color:#eaf1fb;font-style:italic;text-decoration:none}
+.lb{width:100%;padding:16px;background:rgba(10,34,66,.75);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:16px;letter-spacing:3px;font-weight:600;cursor:pointer}
+.lb:hover{background:rgba(10,34,66,.95)}
+.err{color:#ffd7d7;font-size:13px;text-align:left;min-height:18px;margin-top:-18px;margin-bottom:16px}
+.hint{color:rgba(255,255,255,.6);font-size:12px;margin-top:22px}
+
+/* ===================== APP SHELL ===================== */
+#app{height:100%;display:flex;flex-direction:column}
+header{height:64px;background:var(--hd);display:flex;align-items:center;padding:0 22px 0 18px;gap:16px;box-shadow:0 1px 4px rgba(0,0,0,.12);flex-shrink:0;position:relative;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;color:var(--p);font-size:20px;font-weight:600;letter-spacing:.5px;cursor:pointer;user-select:none}
+.brand span{width:36px;height:36px;border-radius:50%;background:var(--pd);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sp{flex:1}
+.campus{display:flex;align-items:center;gap:10px;border:1px solid var(--bd);border-radius:4px;padding:8px 14px;font-size:13px;color:var(--tx);max-width:320px;line-height:1.25;cursor:pointer;background:none}
+.campus svg{color:var(--ac);flex-shrink:0}
+.hb{background:none;border:none;color:var(--tx);cursor:pointer;position:relative;padding:4px;display:flex}
+.hb svg{width:26px;height:26px}
+.bdg{position:absolute;top:-6px;right:-8px;background:#d83b3b;color:#fff;font-size:11px;border-radius:12px;padding:1px 6px}
+.dropd{position:absolute;right:18px;top:60px;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.2);min-width:190px;z-index:40}
+.dropd button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--tx);padding:10px 12px;border-radius:6px;cursor:pointer;font-size:14px}
+.dropd button:hover{background:var(--pl)}
+.ndrop{position:absolute;right:56px;top:60px;background:var(--card);border:1px solid var(--bd);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.2);width:320px;z-index:40;overflow:hidden}
+.ndrop .nh{padding:14px 16px;font-weight:600;font-size:14px;border-bottom:1px solid var(--bd)}
+.ndrop .ni{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--st);font-size:13px}
+.ndrop .ni svg{color:var(--ac);flex-shrink:0}
+.ndrop .ni p{color:var(--mu);font-size:12px;margin-top:2px}
+.ndrop .ni:last-child{border-bottom:none}
+
+/* ===================== WRAP: RAIL + FLYOUT + MAIN ===================== */
+.wrap{flex:1;display:flex;min-height:0;position:relative}
+.rail{width:64px;background:var(--card);border-right:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:8px;z-index:25;position:relative}
+.rail button{width:44px;height:44px;border-radius:10px;border:none;background:none;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.rail button:hover{background:var(--pl);color:var(--ac)}
+.rail button.on{background:var(--pl);color:var(--ac);box-shadow:inset 0 0 0 1.5px var(--ac)}
+
+.backdrop{position:fixed;inset:0;background:rgba(10,20,40,.15);z-index:20}
+
+.flyout{position:absolute;top:0;left:64px;bottom:0;width:300px;background:var(--card);border-right:1px solid var(--bd);box-shadow:6px 0 18px rgba(0,0,0,.15);z-index:26;padding:26px 24px;overflow-y:auto;transform:translateX(-8px);opacity:0;pointer-events:none;transition:transform .15s ease,opacity .15s ease}
+.flyout.open{transform:translateX(0);opacity:1;pointer-events:auto}
+.flyout .fclose{position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:6px;border:1px solid var(--bd);background:var(--st);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.flyout .fclose svg{width:14px;height:14px}
+.flyout h2{font-size:18px;margin-bottom:6px;padding-right:30px;color:var(--tx)}
+.flyout p.desc{color:var(--mu);font-size:13px;line-height:1.4;margin-bottom:16px}
+.flyout hr{border:none;border-top:1px solid var(--bd);margin-bottom:16px}
+.flyout ul{list-style:none;display:flex;flex-direction:column;gap:16px}
+.flyout ul a{color:var(--ac);font-size:14.5px;cursor:pointer;line-height:1.3;display:block}
+.flyout ul a:hover{text-decoration:underline}
+.flyout ul a.on{font-weight:700;color:var(--pd)}
+
+main{flex:1;overflow-y:auto;padding:26px 36px 60px}
+.in{max-width:1280px;margin:0 auto}
+h1{font-size:26px;font-weight:600;margin-bottom:16px;color:var(--tx)}
+.tabs{display:flex;border-bottom:2px solid var(--bd);margin-bottom:26px;flex-wrap:wrap}
+.tabs a{padding:11px 18px;font-size:14.5px;color:var(--mu);cursor:pointer;margin-bottom:-2px;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--ac);font-weight:600;border-color:var(--ac)}
+
+.wk{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.wk h3{font-size:22px;letter-spacing:.5px;flex:1;min-width:230px}.wk h3 em{font-style:normal;color:var(--mu);font-weight:400}
+.wk .n{background:none;border:none;color:var(--ac);font-size:24px;cursor:pointer;padding:0 6px}
+.wk .lab{color:var(--ac);border-bottom:2px solid var(--ac);font-size:15px;padding-bottom:1px}
+.btn{background:#d7dde7;color:#3b4a60;border:none;border-radius:5px;padding:12px 20px;font-size:15px;cursor:pointer}
+.btn:hover{background:#c6cfdd}
+.btn.pri{background:var(--ac);color:#fff}
+.btn.pri:hover{background:var(--p)}
+
+.board{background:var(--card);border-radius:12px;padding:22px 26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px 18px;align-items:start}
+.dh{text-align:center;padding:10px 6px;border-radius:5px;color:var(--mu);font-weight:600;font-size:15px;letter-spacing:.5px;margin-bottom:18px;line-height:1.25}
+.dh small{display:block;font-weight:400;font-size:15px}
+.dh.t{background:var(--p);color:#fff}
+.cd{border:2px solid var(--bd);border-radius:6px;text-align:center;background:var(--card);overflow:hidden}
+.cd.now{border-color:var(--ac)}
+.cd svg.i{width:32px;height:32px;color:var(--mu);margin:18px 0 10px}
+.bar{display:block;width:80px;height:7px;border-radius:5px;margin:0 auto 10px;background:var(--bd)}.bar.o{background:var(--or)}.bar.b{background:var(--tq)}
+.mod{color:var(--mu);font-weight:600;font-size:14.5px;padding-bottom:10px;display:block}
+a.mod{color:var(--ac);text-decoration:underline}
+.off .mod{padding-bottom:14px}
+.tm{background:var(--st);font-weight:700;font-size:15.5px;padding:8px}
+.cd .in2{padding:10px 12px 12px}.cd .in2 p{font-size:14.5px;padding:7px 2px;line-height:1.3}
+.cd hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
+.cd small{display:block;font-size:12.5px;padding-top:9px;color:var(--tx)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.c2{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--bd)}
+.c2 h4{font-size:16px;margin-bottom:6px}.c2 p{color:var(--mu);font-size:13.5px;line-height:1.45}
+.c2 svg.i{color:var(--ac);width:28px;height:28px;margin-bottom:10px}
+.pg{height:8px;background:var(--st);border-radius:8px;margin-top:12px;overflow:hidden}.pg i{display:block;height:100%;background:var(--ac)}
+
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border-radius:10px;overflow:hidden}
+th{text-align:left;padding:13px;background:var(--st);color:var(--mu);font-size:12.5px}td{padding:13px;border-top:1px solid var(--bd)}
+.tg{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600}.tg.a{background:#dfe9fa;color:#1c4f8c}.tg.w{background:#fbefd5;color:#9a6312}.tg.g{background:#dff3e7;color:#1f7a45}
+.sc{overflow-x:auto}
+
+.li{display:flex;gap:14px;padding:16px;border-top:1px solid var(--bd);align-items:center}.li:first-child{border:none}.li p{font-size:13.5px;color:var(--mu)}
+.li svg.i{color:var(--ac);flex-shrink:0}
+
+.tb{display:flex;gap:12px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.tb input{flex:1;min-width:220px;padding:12px 14px;border:1px solid var(--bd);border-radius:5px;font-size:14.5px;background:var(--card);color:var(--tx);outline:none}
+.tb input:focus,.fm input:focus,.fm select:focus,.fm textarea:focus{border-color:var(--ac)}
+.fm{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px 22px}
+.fm label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu);font-weight:600}
+.fm input,.fm select,.fm textarea{padding:11px 12px;border:1px solid var(--bd);border-radius:5px;font-size:14.5px;font-weight:400;background:var(--card);color:var(--tx);outline:none;font-family:inherit}
+.fm input[readonly]{background:var(--st)}
+.fm .full{grid-column:1/-1}
+.fm .ferr{color:#c0392b;font-size:13px;min-height:18px}
+.fm .fa{display:flex;gap:12px}
+.btn.dg{background:#f6dcdc;color:#a32b2b}.btn.dg:hover{background:#efc6c6}
+.btn.sm{padding:7px 12px;font-size:13px;margin-right:6px}
+.tg.r{background:#f9dede;color:#a32b2b}
+.emp{text-align:center;color:var(--mu);padding:26px}
+@media(max-width:700px){main{padding:18px 14px 50px}.campus{display:none}.brand{font-size:16px}.board{padding:14px}.tabs a{font-size:13px;padding:9px 10px}.flyout{width:86vw}}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<section id="login">
+  <div class="lc">
+    <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path></svg></div>
+    <h1 class="lt">Portal do Aluno</h1>
+    <form id="lf">
+      <div class="fg"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z"></path><path d="M3 5l9 8 9-8"></path></svg><input id="lu" type="text" placeholder="Usuário" required autocomplete="username"></div>
+      <div class="fg"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><input id="lp" type="password" placeholder="Senha" required autocomplete="current-password"></div>
+      <div class="err" id="lerr"></div>
+      <div class="or"><label><input type="checkbox" checked> Lembrar de mim</label><a href="#" onclick="alert('Recuperação de senha (protótipo).');return false">Esqueci a senha</a></div>
+      <button class="lb" type="submit">ENTRAR</button>
+    </form>
+    <p class="hint">Protótipo — acesso restrito a usuários cadastrados. Primeiro acesso: admin / admin123</p>
+  </div>
+</section>
+
+<!-- ===================== APP ===================== -->
+<section id="app" class="hide">
+  <header>
+    <div class="brand" id="brandHome"><span><svg class="i" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"></path><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path></svg></span>Portal do Aluno</div>
+    <div class="sp"></div>
+    <button class="campus" id="campusBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>IUSJ SÃO BERNARDO - São Bernardo do Campo - 430</span><svg class="i" viewBox="0 0 24 24" style="width:16px;flex-shrink:0"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <button class="hb" id="accBtn" title="Acessibilidade"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="7.5" r="1"></circle><path d="M7 10.5l5 1 5-1M12 11.5V15l-2 4M12 15l2 4"></path></svg></button>
+    <button class="hb" id="notifBtn" title="Notificações"><svg class="i" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"></path><path d="M10 21h4"></path></svg><span class="bdg">3</span></button>
+    <div class="ndrop hide" id="ndrop">
+      <div class="nh">Notificações</div>
+      <div class="ni"><svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"></path><path d="M14 3v4h4M9 12h6M9 16h6"></path></svg><div><b>Rematrícula aberta</b><p>Secretaria · Prazo até 15/10</p></div></div>
+      <div class="ni"><svg class="i" viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-9-2v14c4 0 7 .5 9 2 2-1.5 5-2 9-2V4c-4 0-7 .5-9 2zM12 6v14"></path></svg><div><b>Nova nota lançada</b><p>Banco de Dados · Quiz 02</p></div></div>
+      <div class="ni"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1"></rect><path d="M2 20h20M8 20l1-4h6l1 4"></path></svg><div><b>Aula gravada disponível</b><p>Modelagem de Software</p></div></div>
+    </div>
+    <button class="hb" id="ub" title="Conta"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="10" r="3"></circle><path d="M6 19c1-3 3-4 6-4s5 1 6 4"></path></svg></button>
+    <div class="dropd hide" id="um"><div id="uname" style="padding:10px 12px;font-size:13px;color:var(--mu)"></div><button onclick="TH()">◐ Alternar tema claro/escuro</button><button onclick="OUT()">⏻ Sair</button></div>
+  </header>
+  <div class="wrap">
+    <nav class="rail" id="rail"></nav>
+    <div class="backdrop hide" id="backdrop"></div>
+    <div class="flyout" id="flyout"></div>
+    <main><div class="in" id="page"></div></main>
+  </div>
+</section>
+
+<script>
+const $=s=>document.querySelector(s);
+const S=(d)=>`<svg class="i" viewBox="0 0 24 24">${d}</svg>`;
+const IC={
+ mon:S('<rect x="3" y="4" width="18" height="12" rx="1"/><path d="M2 20h20M8 20l1-4h6l1 4"/>'),
+ cla:S('<rect x="3" y="4" width="18" height="12" rx="1"/><circle cx="8" cy="9" r="1.5"/><path d="M6 14c0-2 4-2 4 0M13 8h5M13 11h4M8 20h8"/>'),
+ book:S('<path d="M12 6c-2-1.5-5-2-9-2v14c4 0 7 .5 9 2 2-1.5 5-2 9-2V4c-4 0-7 .5-9 2zM12 6v14"/>'),
+ cap:S('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>'),
+ bag:S('<rect x="3" y="8" width="18" height="12" rx="1"/><path d="M9 8V5h6v3M3 13h18M11 13v2h2v-2"/>'),
+ lib:S('<path d="M4 4h4v16H4zM10 4h4v16h-4zM16 6l4 1-3 13-4-1z"/>'),
+ mail:S('<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 6l9 7 9-7"/>'),
+ doc:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>'),
+ card:S('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>'),
+ star:S('<path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4 6.4 20.3l1.1-6.2L3 9.7l6.2-.9z"/>'),
+ link:S('<path d="M10 14a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.5 1.5"/><path d="M14 10a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.5-1.5"/>'),
+ chat:S('<path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1-5.5A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/>'),
+ bell:S('<path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/>'),
+ users:S('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 010 6.8M18 14.3c2.2.7 3.5 2.5 3.5 5.7"/>'),
+ flag:S('<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>')
+};
+const MN=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+const DN=['SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'];
+const U={
+ A:{n:'Modelagem de Software',p:'Prof. Lawilson Pereira De Lima',l:'São Bernardo Do Campo - Inovação Digital - 16º Andar - 1603'},
+ B:{n:'Modelos, métodos e técnicas da Engenharia de Software',p:'Prof. Edcleisson Martinez Zanardi',l:'São Bernardo Do Campo - Laboratório De Informática - Único - 18º Andar - 1801'},
+ C:{n:'Modelos, métodos e técnicas da Engenharia de Software',p:'Patricia Vitorino Gomes',l:'São Bernardo Do Campo - Inovação Digital - Único - 7º Andar - 703'},
+ D:{n:'Banco de Dados',p:'Profa. Marina Duarte',l:'São Bernardo Do Campo - Inovação Digital - 4º Andar - 402'}};
+
+/* ===================== ESTADO ===================== */
+let sec='aulas',tab=0;          // página atual exibida no main
+let flyoutSec=null,flyoutOpen=false; // painel flutuante (independe da página atual)
+
+/* ===================== DEFINIÇÃO DAS SEÇÕES (rail + flyout) ===================== */
+const SEC=[
+ ['aulas','mon','Aulas','Tudo o que é necessário para sua rotina de estudos'],
+ ['curso','cap','Curso','O caminho para concluir seu curso'],
+ ['acad','bag','Academia de Futuros Profissionais','(Estágios, Buscador de vagas, Simulador de entrevistas IA, e Programas NEST/HUB)'],
+ ['serv','lib','Serviços','Acesso aos processos e documentos acadêmicos'],
+ ['com','mail','Comunicação','Encontre os avisos recebidos e envie mensagens'],
+ ['proj','flag','Projetos ODS','Cadastro, consulta, alteração e exclusão de projetos ligados aos ODS'],
+ ['usr','users','Usuários','Gerenciamento dos usuários com acesso ao sistema']
+];
+
+/* ===================== HELPERS DE CONTEÚDO ===================== */
+const tiles=a=>`<div class="grid">`+a.map(x=>`<div class="c2">${IC[x[0]]}<h4>${x[1]}</h4><p>${x[2]}</p></div>`).join('')+'</div>';
+const feed=a=>`<div class="c2" style="padding:0">`+a.map(x=>`<div class="li">${IC[x[0]]}<div><b>${x[1]}</b><p>${x[2]}</p></div></div>`).join('')+'</div>';
+const docCard=(icon,title,desc,btn)=>`<div class="c2">${IC[icon]}<h4>${title}</h4><p>${desc}</p><button class="btn pri" style="margin-top:14px" onclick="alert('${btn.replace(/'/g,"\\'")} (protótipo).')">${btn}</button></div>`;
+const progressCard=(icon,title,desc,pct,note)=>`<div class="c2"><div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">${IC[icon]}<h4 style="margin:0">${title}</h4></div><p>${desc}</p><div class="pg"><i style="width:${pct}%"></i></div><p style="margin-top:8px;font-weight:600;color:var(--tx)">${pct}% ${note}</p></div>`;
+
+/* ===================== QUADRO DE AULAS ===================== */
+let off=0;
+function days(o){const n=new Date();n.setHours(0,0,0,0);const w=(n.getDay()+6)%7,m=new Date(n);m.setDate(n.getDate()-w+o*7);return[...Array(6)].map((_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return d})}
+function cls(d,o){const w=(d.getDay()+6)%7;return[o%2?{u:U.D}:null,{u:U.A,g:1},{u:U.A},{u:U.B},{u:U.C},null][w]}
+function card(c,now){
+ if(!c)return`<div class="cd off">${IC.book}<i class="bar"></i><span class="mod">(sem aula)</span></div>`;
+ return`<div class="cd ${now?'now':''}">${c.g?IC.mon:IC.cla}<i class="bar ${c.g?'o':'b'}"></i>${c.g?'<a class="mod" href="#" onclick="return false">Acessar gravação</a>':'<span class="mod">Presencial</span>'}<div class="tm">19h00 - 21h50</div><div class="in2"><p>${c.u.n}</p><hr><p>${c.g?'Digital':c.u.l}</p><hr><small>${c.u.p}</small></div></div>`}
+function quadro(){
+ const ds=days(off),a=ds[0],b=ds[5],t=new Date();t.setHours(0,0,0,0);
+ const ms=a.getMonth()==b.getMonth()?MN[a.getMonth()]:MN[a.getMonth()]+'/'+MN[b.getMonth()];
+ return`<div class="wk"><h3>${ms} <em>${b.getFullYear()}</em></h3><button class="n" onclick="W(-1)">‹</button><span class="lab">semana ${a.getDate()}-${b.getDate()}</span><button class="n" onclick="W(1)">›</button><button class="btn" onclick="W(0)">exibir hoje</button></div>
+ <div class="board">${ds.map((d,i)=>{const now=+d==+t;return`<div><div class="dh ${now?'t':''}">${DN[i]}<small>${d.getDate()}</small></div>${card(cls(d,off),now)}</div>`}).join('')}</div>`}
+function gravadas(){return`<div class="grid">`+[['A','29/09'],['B','24/09'],['A','22/09'],['C','18/09'],['D','15/09'],['B','11/09']].map(r=>`<div class="c2">${IC.mon}<h4>${U[r[0]].n}</h4><p>${U[r[0]].p}<br>Aula de ${r[1]} · 19h00 - 21h50</p><p style="margin-top:10px"><a href="#" onclick="return false" style="color:var(--ac)">Acessar gravação</a></p></div>`).join('')+'</div>'}
+function ucs(){return`<div class="grid">`+[['A',72],['B',55],['C',40],['D',85]].map(r=>`<div class="c2">${IC.cap}<h4>${U[r[0]].n}</h4><p>${U[r[0]].p}</p><div class="pg"><i style="width:${r[1]}%"></i></div><p style="margin-top:6px">${r[1]}% do conteúdo concluído</p></div>`).join('')+'</div>'}
+function ativ(){return`<div class="sc"><table><tr><th>Atividade</th><th>Unidade de Curso</th><th>Entrega</th><th>Peso</th><th>Status</th></tr>`+[['Prova N1','A','05/10','4,0','Em breve','a'],['Estudo de caso','B','09/10','2,0','Em breve','a'],['Diagrama UML','A','14/10','2,0','Pendente','w'],['Seminário','C','21/10','3,0','Pendente','w'],['Quiz 02','D','25/09','1,0','Entregue','g']].map(r=>`<tr><td>${r[0]}</td><td>${U[r[1]].n}</td><td>${r[2]}</td><td>${r[3]}</td><td><span class="tg ${r[5]}">${r[4]}</span></td></tr>`).join('')+'</table></div>'}
+function notasFaltas(){return`<div class="sc"><table><tr><th>UC</th><th>N1</th><th>N2</th><th>Faltas</th><th>Situação</th></tr>`+Object.values(U).map((u,i)=>`<tr><td>${u.n}</td><td>${(7+i*.6).toFixed(1).replace('.',',')}</td><td>${(6.5+i*.7).toFixed(1).replace('.',',')}</td><td>${i*2}</td><td><span class="tg g">Regular</span></td></tr>`).join('')+'</table></div>'}
+function planoEnsino(){return tiles(Object.entries(U).map(([k,u])=>['doc',u.n,u.p]))}
+function agendamento(){return feed([['star','Prova N1 · Cálculo I','Agendamento aberto até 01/10 · Escolha o melhor horário'],['star','Prova N1 · Modelagem de Software','Agendamento aberto até 03/10'],['star','Seminário · Arquitetura de Sistemas','Agendamento aberto até 18/10']])}
+function bibliotecasOnline(){return docCard('lib','Bibliotecas Online','Acesso a acervos digitais, e-books e bases de artigos acadêmicos parceiras da instituição.','Acessar bibliotecas online')}
+function bibliotecaFisica(){return docCard('book','Biblioteca Física','Campus IUSJ São Bernardo · Térreo · Seg. a Sex. 8h–22h · Sáb. 8h–12h','Consultar acervo físico')}
+
+/* ===================== CURSO ===================== */
+function certificados(){return tiles([['doc','Certificado de Conclusão de Curso','Disponível após a integralização de todas as UCs'],['doc','Certificado de Participação','Eventos e atividades extracurriculares concluídas'],['doc','Certificado NEST/HUB','Programas de extensão e inovação concluídos']])}
+function historico(){return docCard('doc','Histórico Escolar','Emita seu histórico escolar completo, com notas e frequência de todos os semestres cursados.','Emitir histórico em PDF')}
+function extensao(){return tiles([['star','Programa de Extensão Comunitária','40h · Inscrições abertas até 10/10'],['star','Projeto de Iniciação Científica','60h · Vagas limitadas'],['star','Curso de Libras','20h · Modalidade online']])}
+function atividadesComplementares(){return`<div class="sc"><table><tr><th>Atividade</th><th>Categoria</th><th>Carga Horária</th><th>Status</th></tr>`+[['Semana de Tecnologia','Evento acadêmico','8h','g'],['Curso de Libras','Curso extracurricular','20h','g'],['Monitoria de Banco de Dados','Monitoria','30h','a'],['Projeto Voluntário','Extensão','15h','w']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><span class="tg ${r[3]}">${r[3]=='g'?'Validada':r[3]=='a'?'Em análise':'Pendente'}</span></td></tr>`).join('')+'</table></div>'}
+function planoCurricular(){return tiles([['cap','1º semestre','Concluído · 6 UCs'],['cap','2º semestre','Concluído · 6 UCs'],['cap','3º semestre','Em andamento · 4 UCs'],['cap','4º semestre','A cursar · 6 UCs'],['cap','5º semestre','A cursar · 5 UCs'],['cap','6º semestre','A cursar · 5 UCs']])}
+function declaracaoRegularidade(){return docCard('doc','Declaração de Regularidade Acadêmica','Documento que comprova seu vínculo e situação regular de matrícula na instituição.','Emitir declaração')}
+function percentualHibridez(){return progressCard('cla','Percentual de Hibridez','Percentual de carga horária cursada em formato digital em relação ao total permitido pela modalidade do seu curso.',32,'utilizado (limite de 40%)')}
+
+/* ===================== ACADEMIA DE FUTUROS PROFISSIONAIS ===================== */
+function portalAcademia(){return docCard('bag','Portal Academia de Futuros Profissionais','Estágios, buscador de vagas, simulador de entrevistas com IA e programas NEST/HUB em um só lugar.','Abrir portal (nova aba)')}
+
+/* ===================== SERVIÇOS ===================== */
+function rematricula(){return docCard('doc','Rematrícula 2026/2','Período de rematrícula aberto até 15/10. Confirme sua matrícula para continuar no próximo semestre.','Iniciar rematrícula')}
+function atendimento(){return feed([['chat','Central de Relacionamento','Chat institucional · Atendimento em horário comercial'],['mail','E-mail da Secretaria','secretaria@portaldoaluno.edu.br'],['bell','Abrir chamado','Acompanhe solicitações abertas com a instituição']])}
+function meusContratos(){return`<div class="sc"><table><tr><th>Semestre</th><th>Documento</th><th>Status</th><th></th></tr>`+[['2026/2','Contrato de Prestação de Serviços','g'],['2026/1','Contrato de Prestação de Serviços','g'],['2025/2','Contrato de Prestação de Serviços','g']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="tg ${r[2]}">Assinado</span></td><td><button class="btn" onclick="alert('Download (protótipo).')">Baixar</button></td></tr>`).join('')+'</table></div>'}
+
+/* ===================== COMUNICAÇÃO ===================== */
+function conectados(){return feed([['link','Microsoft Teams','Salas de aula virtuais e reuniões institucionais'],['link','SharePoint Acadêmico','Materiais e documentos compartilhados pela coordenação'],['link','Comunidade de Alunos','Fórum de discussão entre estudantes do curso']])}
+function avisos(){return feed([['mail','Rematrícula aberta','Secretaria · Prazo até 15/10'],['mail','Calendário de provas N1','Coordenação · Semana de 5/10'],['mail','Manutenção programada no portal','TI · Sábado, 02h às 04h']])}
+function mensagens(){return feed([['mail','Prof. Lawilson Pereira De Lima','Material da aula de Modelagem disponível'],['mail','Secretaria Acadêmica','Seu requerimento foi deferido'],['mail','Coordenação do Curso','Convite para mentoria de carreira']])}
+function notificacoes(){return feed([['star','Nova nota lançada','Banco de Dados · Quiz 02'],['star','Aula gravada disponível','Modelagem de Software'],['star','Atividade próxima do prazo','Diagrama UML · 14/10']])}
+
+/* ===================== CRUD: USUÁRIOS E PROJETOS (ODS) ===================== */
+/* Protótipo: dados em localStorage. No sistema Swing, o equivalente fica no MySQL (tabelas USUARIO e PROJETO). */
+let cur=null;
+const MEM={};
+const DB={
+ load(k,d){try{const v=localStorage.getItem('ulife.'+k);if(v)return JSON.parse(v)}catch(e){}return k in MEM?MEM[k]:d},
+ save(k,v){MEM[k]=v;try{localStorage.setItem('ulife.'+k,JSON.stringify(v))}catch(e){}}
+};
+(function(){
+ if(!DB.load('usr',null))DB.save('usr',[{usuario:'admin',nome:'Administrador',email:'admin@ulife.edu.br',senha:'admin123',telefone:'(11) 99999-0000'}]);
+ if(!DB.load('proj',null))DB.save('proj',[{codigo:'PRJ-001',descricao:'Plataforma acadêmica integrada para ensino híbrido.',ods:4,responsavel:'Administrador',telefone:'(11) 99999-0000',criacao:'2026-08-10',status:'Em andamento'}]);
+})();
+const ODS=['Erradicação da Pobreza','Fome Zero e Agricultura Sustentável','Saúde e Bem-Estar','Educação de Qualidade','Igualdade de Gênero','Água Potável e Saneamento','Energia Limpa e Acessível','Trabalho Decente e Crescimento Econômico','Indústria, Inovação e Infraestrutura','Redução das Desigualdades','Cidades e Comunidades Sustentáveis','Consumo e Produção Responsáveis','Ação Contra a Mudança Global do Clima','Vida na Água','Vida Terrestre','Paz, Justiça e Instituições Eficazes','Parcerias e Meios de Implementação'];
+const STATUS=['Planejado','Em andamento','Concluído','Cancelado'];
+const STC={'Planejado':'a','Em andamento':'w','Concluído':'g','Cancelado':'r'};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fdate=d=>d?d.split('-').reverse().join('/'):'';
+const hoje=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const ed={usr:null,proj:null},qs={usr:'',proj:''};
+const ENT={
+ usr:{k:'usuario',novo:'Novo usuário',busca:'Consultar usuário por nome, usuário, e-mail ou telefone',
+  th:['Usuário','Nome','E-mail','Telefone'],
+  td:u=>[esc(u.usuario),esc(u.nome),esc(u.email),esc(u.telefone)],
+  txt:u=>[u.usuario,u.nome,u.email,u.telefone].join(' ')},
+ proj:{k:'codigo',novo:'Novo projeto',busca:'Consultar projeto por código, descrição, ODS, responsável ou status',
+  th:['Código','Descrição','ODS','Responsável','Telefone','Criação','Status'],
+  td:p=>[esc(p.codigo),esc(p.descricao),'ODS '+p.ods+' – '+esc(ODS[p.ods-1]),esc(p.responsavel),esc(p.telefone),fdate(p.criacao),`<span class="tg ${STC[p.status]||'a'}">${esc(p.status)}</span>`],
+  txt:p=>[p.codigo,p.descricao,'ODS '+p.ods,ODS[p.ods-1],p.responsavel,p.telefone,p.status].join(' ')}
+};
+function rows(t){
+ const E=ENT[t],q=qs[t].toLowerCase(),l=DB.load(t,[]).filter(x=>E.txt(x).toLowerCase().includes(q));
+ if(!l.length)return`<tr><td colspan="${E.th.length+1}" class="emp">Nenhum registro encontrado.</td></tr>`;
+ return l.map(x=>`<tr>${E.td(x).map(c=>`<td>${c}</td>`).join('')}<td style="white-space:nowrap"><button class="btn sm" onclick="ED('${t}','${x[E.k]}')">Alterar</button><button class="btn sm dg" onclick="DL('${t}','${x[E.k]}')">Excluir</button></td></tr>`).join('');
+}
+function crud(t){
+ if(ed[t]!==null)return form(t);
+ const E=ENT[t];
+ return`<div class="tb"><input type="search" placeholder="${E.busca}" value="${esc(qs[t])}" oninput="QS('${t}',this.value)"><button class="btn pri" onclick="ED('${t}','')">+ ${E.novo}</button></div>
+ <div class="sc"><table><thead><tr>${E.th.map(h=>`<th>${h}</th>`).join('')}<th>Ações</th></tr></thead><tbody id="tb-${t}">${rows(t)}</tbody></table></div>`;
+}
+function nextCod(){const n=DB.load('proj',[]).map(p=>+(/(\d+)$/.exec(p.codigo)||[0,0])[1]);return'PRJ-'+String(Math.max(0,...n)+1).padStart(3,'0')}
+function form(t){
+ const E=ENT[t],k=ed[t],isNew=k==='';
+ let x=isNew?(t==='proj'?{codigo:nextCod(),status:'Planejado',criacao:hoje()}:{}):(DB.load(t,[]).find(i=>i[E.k]===k)||{});
+ const v=n=>esc(x[n]);
+ const inp=(n,l,type,extra)=>`<label>${l}<input name="${n}" type="${type||'text'}" value="${v(n)}" ${extra||''}></label>`;
+ let body;
+ if(t==='usr'){
+  body=inp('usuario','Usuário','text',(isNew?'':'readonly ')+'required maxlength="30"')+inp('nome','Nome','text','required maxlength="100"')
+   +inp('email','E-mail','email','required maxlength="150"')+inp('telefone','Telefone','tel','required placeholder="(11) 99999-0000"')
+   +`<label>Senha<input name="senha" type="password" ${isNew?'required':'placeholder="Deixe em branco para manter a atual"'} minlength="6" autocomplete="new-password"></label>`;
+ }else{
+  body=inp('codigo','Código','text',(isNew?'':'readonly ')+'required maxlength="20"')
+   +`<label>ODS<select name="ods" required><option value="">Selecione…</option>${ODS.map((o,i)=>`<option value="${i+1}" ${x.ods==i+1?'selected':''}>ODS ${i+1} – ${o}</option>`).join('')}</select></label>`
+   +`<label class="full">Descrição<textarea name="descricao" rows="3" required maxlength="500">${v('descricao')}</textarea></label>`
+   +inp('responsavel','Nome do responsável','text','required maxlength="100"')+inp('telefone','Telefone','tel','required placeholder="(11) 99999-0000"')
+   +inp('criacao','Data da criação','date','required')
+   +`<label>Status<select name="status" required>${STATUS.map(o=>`<option ${x.status===o?'selected':''}>${o}</option>`).join('')}</select></label>`;
+ }
+ return`<h3 style="margin-bottom:14px;font-size:18px">${isNew?E.novo:'Alterar '+(t==='usr'?'usuário':'projeto')}</h3>
+ <form class="fm" onsubmit="return SV('${t}',event)">${body}<div class="ferr full" id="ferr"></div><div class="fa full"><button class="btn pri" type="submit">Salvar</button><button class="btn" type="button" onclick="CN('${t}')">Cancelar</button></div></form>`;
+}
+function SV(t,e){
+ e.preventDefault();
+ const E=ENT[t],isNew=ed[t]==='',f=Object.fromEntries(new FormData(e.target)),l=DB.load(t,[]);
+ Object.keys(f).forEach(n=>{if(n!=='senha')f[n]=String(f[n]).trim()});
+ const err=m=>{$('#ferr').textContent=m;return false};
+ const tel=/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/;
+ if(!tel.test(f.telefone))return err('Telefone inválido. Use o formato (11) 99999-0000.');
+ if(isNew&&l.some(i=>i[E.k].toLowerCase()===f[E.k].toLowerCase()))return err('Já existe um registro com este '+(t==='usr'?'usuário.':'código.'));
+ if(t==='usr'){
+  if(!/^[\w.\-@]+$/.test(f.usuario))return err('Usuário: use apenas letras, números, ponto, hífen ou underscore.');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email))return err('E-mail inválido.');
+  if(f.senha&&f.senha.length<6)return err('A senha deve ter ao menos 6 caracteres.');
+  if(isNew&&!f.senha)return err('Informe a senha.');
+ }else{
+  if(!/^[\w.\-]+$/.test(f.codigo))return err('Código: use apenas letras, números, ponto, hífen ou underscore.');
+  f.ods=+f.ods;if(!(f.ods>=1&&f.ods<=17))return err('Selecione um ODS.');
+  if(!STATUS.includes(f.status))return err('Status inválido.');
+ }
+ if(isNew)l.push(f);
+ else{const i=l.findIndex(o=>o[E.k]===ed[t]);if(t==='usr'&&!f.senha)f.senha=l[i].senha;l[i]=f}
+ DB.save(t,l);ed[t]=null;render();return false;
+}
+function ED(t,k){ed[t]=k;render()}
+function CN(t){ed[t]=null;render()}
+function QS(t,v){qs[t]=v;$('#tb-'+t).innerHTML=rows(t)}
+function DL(t,k){
+ if(t==='usr'&&k===cur)return alert('Você não pode excluir o usuário que está logado.');
+ if(!confirm('Excluir este registro? Esta ação não pode ser desfeita.'))return;
+ DB.save(t,DB.load(t,[]).filter(i=>i[ENT[t].k]!==k));render();
+}
+function usuariosPage(){return crud('usr')}
+function projetosPage(){return crud('proj')}
+
+/* ===================== MAPA DE PÁGINAS POR SEÇÃO ===================== */
+const PG={
+ aulas:['Aulas',['Quadro de Aulas','Aulas Gravadas','Minhas UCs','Atividades Avaliativas','Notas/Faltas','Plano de Ensino','Agendamento de Avaliações','Bibliotecas Online','Biblioteca Física'],
+  [quadro,gravadas,ucs,ativ,notasFaltas,planoEnsino,agendamento,bibliotecasOnline,bibliotecaFisica]],
+ curso:['Curso',['Certificados','Histórico Escolar','Extensão','Atividades Complementares','Plano Curricular','Declaração de Regularidade Acadêmica','Percentual de Hibridez'],
+  [certificados,historico,extensao,atividadesComplementares,planoCurricular,declaracaoRegularidade,percentualHibridez]],
+ acad:['Academia de Futuros Profissionais',['Portal Academia de Futuros Profissionais'],[portalAcademia]],
+ serv:['Serviços',['Rematrícula','Atendimento','Meus Contratos'],[rematricula,atendimento,meusContratos]],
+ com:['Comunicação',['Conectados','Avisos','Mensagens','Notificações'],[conectados,avisos,mensagens,notificacoes]],
+ proj:['Projetos ODS',['Projetos'],[projetosPage]],
+ usr:['Usuários',['Usuários'],[usuariosPage]]
+};
+
+/* Itens exibidos no painel flutuante (ordem igual aos prints; "Aulas Gravadas" fica acessível via aba dentro da própria página) */
+const FLYITEMS={
+ aulas:[2,0,3,4,5,6,7,8], // Minhas UCs, Quadro de Aulas, Atividades Avaliativas, Notas/Faltas, Plano de Ensino, Agendamento, Bibliotecas Online, Biblioteca Física
+ curso:[0,1,2,3,4,5,6],
+ acad:[0],
+ serv:[0,1,2],
+ com:[0,1,2,3],
+ proj:[0],
+ usr:[0]
+};
+
+/* ===================== RENDER ===================== */
+function render(){
+ if(!cur)return; // controle de acesso: sem autenticação nada é exibido
+ // rail
+ $('#rail').innerHTML=SEC.map(s=>`<button class="${(flyoutOpen&&flyoutSec===s[0])||(!flyoutOpen&&sec===s[0])?'on':''}" data-s="${s[0]}" title="${s[2]}">${IC[s[1]]}</button>`).join('');
+ // page content
+ const p=PG[sec];
+ $('#page').innerHTML=`<h1>${p[0]}</h1><div class="tabs">${p[1].map((t,i)=>`<a class="${i==tab?'on':''}" data-t="${i}">${t}</a>`).join('')}</div>${p[2][tab]()}`;
+ // flyout
+ if(flyoutOpen){
+  const s=SEC.find(x=>x[0]===flyoutSec);
+  const items=FLYITEMS[flyoutSec].map(i=>`<li><a data-sec="${flyoutSec}" data-tab="${i}" class="${sec===flyoutSec&&tab===i?'on':''}">${PG[flyoutSec][1][i]}</a></li>`).join('');
+  $('#flyout').innerHTML=`<button class="fclose" id="fclose">${S('<path d="M15 6l-6 6 6 6"/>')}</button><h2>${s[2]}</h2><p class="desc">${s[3]}</p><hr><ul>${items}</ul>`;
+  $('#flyout').classList.add('open');
+  $('#backdrop').classList.remove('hide');
+ }else{
+  $('#flyout').classList.remove('open');
+  $('#backdrop').classList.add('hide');
+ }
+}
+
+/* ===================== EVENTOS ===================== */
+$('#rail').onclick=e=>{
+ const b=e.target.closest('button');if(!b)return;
+ const s=b.dataset.s;
+ if(flyoutOpen&&flyoutSec===s){flyoutOpen=false}else{flyoutSec=s;flyoutOpen=true}
+ render();
+};
+$('#flyout').addEventListener('click',e=>{
+ if(e.target.closest('#fclose')){flyoutOpen=false;render();return}
+ const a=e.target.closest('a[data-sec]');
+ if(a){sec=a.dataset.sec;tab=+a.dataset.tab;flyoutOpen=false;render();window.scrollTo(0,0)}
+});
+$('#backdrop').onclick=()=>{flyoutOpen=false;render()};
+$('#page').onclick=e=>{const a=e.target.closest('.tabs a');if(a){tab=+a.dataset.t;render()}};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&flyoutOpen){flyoutOpen=false;render()}});
+$('#brandHome').onclick=()=>{sec='aulas';tab=0;flyoutOpen=false;render();window.scrollTo(0,0)};
+$('#campusBtn').onclick=()=>alert('Seletor de campus/organização (protótipo).');
+$('#accBtn').onclick=()=>alert('Recursos de acessibilidade (protótipo).');
+
+function W(n){off=n?off+n:0;render()}
+function OUT(){cur=null;ed.usr=null;ed.proj=null;$('#um').classList.add('hide');$('#app').classList.add('hide');$('#login').classList.remove('hide');$('#lerr').textContent='';$('#lf').reset()}
+function TH(){const r=document.documentElement;alert('Alternância de tema (protótipo).')}
+$('#ub').onclick=(e)=>{e.stopPropagation();$('#ndrop').classList.add('hide');$('#um').classList.toggle('hide')};
+$('#notifBtn').onclick=(e)=>{e.stopPropagation();$('#um').classList.add('hide');$('#ndrop').classList.toggle('hide')};
+document.addEventListener('click',e=>{
+ if(!e.target.closest('#um')&&!e.target.closest('#ub'))$('#um').classList.add('hide');
+ if(!e.target.closest('#ndrop')&&!e.target.closest('#notifBtn'))$('#ndrop').classList.add('hide');
+});
+
+/* ===================== LOGIN ===================== */
+$('#lf').addEventListener('submit',e=>{
+ e.preventDefault();
+ const u=$('#lu').value.trim(),p=$('#lp').value;
+ if(!u||!p){$('#lerr').textContent='Preencha usuário e senha para continuar.';return}
+ const f=DB.load('usr',[]).find(x=>x.usuario.toLowerCase()===u.toLowerCase()&&x.senha===p);
+ if(!f){$('#lerr').textContent='Usuário ou senha inválidos.';return}
+ cur=f.usuario;$('#uname').textContent='Olá, '+f.nome;
+ $('#lerr').textContent='';
+ $('#login').classList.add('hide');
+ $('#app').classList.remove('hide');
+ sec='aulas';tab=0;off=0;flyoutOpen=false;
+ render();
+});
+</script>
+</body>
+</html>
