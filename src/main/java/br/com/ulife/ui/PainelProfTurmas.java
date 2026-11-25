@@ -50,6 +50,16 @@ public class PainelProfTurmas extends JPanel {
         barra.add(cmbTurma, BorderLayout.CENTER);
         add(barra, BorderLayout.NORTH);
         add(conteudo, BorderLayout.CENTER);
+        for (int i = 0; i < turmas.size(); i++) { // abre na primeira turma que já tem alunos
+            try {
+                if (!turmaDAO.alunosDaTurma(turmas.get(i).getTurmaId()).isEmpty()) {
+                    cmbTurma.setSelectedIndex(i);
+                    return;
+                }
+            } catch (RuntimeException ignorada) {
+                break;
+            }
+        }
         carregar();
     }
 

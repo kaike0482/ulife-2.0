@@ -124,6 +124,16 @@ public class PainelFrequencia extends JPanel {
         centro.add(sul, BorderLayout.SOUTH);
         add(centro, BorderLayout.CENTER);
 
+        for (int i = 0; i < turmas.size(); i++) { // abre na primeira turma que já tem aulas
+            try {
+                if (!acad.sessoes(turmas.get(i).getTurmaId()).isEmpty()) {
+                    cmbTurma.setSelectedIndex(i);
+                    return;
+                }
+            } catch (RuntimeException ignorada) {
+                break;
+            }
+        }
         carregarSessoes(null);
     }
 
