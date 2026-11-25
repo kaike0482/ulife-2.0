@@ -20,3 +20,6 @@ Thumbs.db
 
 # Database
 *.sql
+# Arquivos gerados em execução (entregas, materiais e documentos emitidos)
+uploads/
+documentos/

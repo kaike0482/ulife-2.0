@@ -24,7 +24,8 @@ public class PortalAlunoDAO {
     public record Gravacao(String turma, LocalDate data, String titulo, String url) {}
     public record UC(String codigo, String turma, String professor, int progresso, double horasMinistradas, int cargaHoraria) {}
     public record Atividade(int tarefaId, String turma, String titulo, String descricao, LocalDateTime prazo,
-                            BigDecimal peso, String status, String protocolo) {}
+                            BigDecimal peso, String status, String protocolo, BigDecimal nota, String feedback) {}
+    public record MaterialAluno(String turma, String titulo, String arquivoNome, String caminho, LocalDateTime publicado) {}
     public record Plano(String turma, String professor, String ementa, String objetivos, String conteudo,
                         String criterios, String bibliografia) {}
     public record Horario(int horarioId, LocalDateTime dataHora, int vagas, int ocupadas, boolean meu) {}
@@ -116,7 +117,8 @@ public class PortalAlunoDAO {
     }
 
     public List<Atividade> atividades(int usuarioId) {
-        return consultar("SELECT ta.tarefa_id, t.nome, ta.titulo, ta.descricao, ta.prazo_entrega, ta.peso, e.protocolo_digital "
+        return consultar("SELECT ta.tarefa_id, t.nome, ta.titulo, ta.descricao, ta.prazo_entrega, ta.peso, e.protocolo_digital, "
+                + "e.status, e.nota, e.feedback "
                 + "FROM TAREFA ta JOIN TURMA t ON t.turma_id = ta.turma_id "
                 + "JOIN MATRICULA m ON m.turma_id = t.turma_id AND m.aluno_id = ? AND m.status = 'ATIVA' "
                 + "LEFT JOIN ENTREGA e ON e.tarefa_id = ta.tarefa_id AND e.aluno_id = ? "
@@ -126,7 +128,7 @@ public class PortalAlunoDAO {
                     String protocolo = rs.getString(7);
                     String status;
                     if (protocolo != null) {
-                        status = "Entregue";
+                        status = "CORRIGIDO".equals(rs.getString(8)) ? "Corrigida" : "Entregue";
                     } else if (prazo.isBefore(LocalDateTime.now())) {
                         status = "Atrasada";
                     } else if (prazo.isBefore(LocalDateTime.now().plusDays(7))) {
@@ -135,7 +137,7 @@ public class PortalAlunoDAO {
                         status = "Em breve";
                     }
                     return new Atividade(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), prazo,
-                            rs.getBigDecimal(6), status, protocolo);
+                            rs.getBigDecimal(6), status, protocolo, rs.getBigDecimal(9), rs.getString(10));
                 }, usuarioId, usuarioId);
     }
 
@@ -287,6 +289,15 @@ public class PortalAlunoDAO {
 
     public void cancelarAgendamento(int horarioId, int usuarioId) {
         atualizar("DELETE FROM AGENDAMENTO_AVALIACAO WHERE horario_id = ? AND aluno_id = ?", horarioId, usuarioId);
+    }
+
+    /** Materiais publicados pelos professores nas turmas do aluno. */
+    public List<MaterialAluno> materiais(int usuarioId) {
+        return consultar("SELECT t.nome, mt.titulo, mt.arquivo_nome, mt.arquivo_caminho, mt.publicado_em FROM MATERIAL mt "
+                + "JOIN TURMA t ON t.turma_id = mt.turma_id JOIN MATRICULA m ON m.turma_id = t.turma_id "
+                + "WHERE m.aluno_id = ? AND m.status = 'ATIVA' ORDER BY mt.publicado_em DESC, t.nome",
+                rs -> new MaterialAluno(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                        rs.getTimestamp(5).toLocalDateTime()), usuarioId);
     }
 
     // ------------------------------------------------------------------ bibliotecas

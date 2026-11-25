@@ -50,7 +50,11 @@ final class ConteudoSchema {
             + "CONSTRAINT fk_atcomp_usr FOREIGN KEY (aluno_id) REFERENCES USUARIO(usuario_id) ON DELETE CASCADE) ENGINE=InnoDB",
         "CREATE TABLE IF NOT EXISTS DOCUMENTO_EMITIDO (documento_id INT AUTO_INCREMENT PRIMARY KEY, aluno_id INT NOT NULL, "
             + "tipo VARCHAR(40) NOT NULL, codigo VARCHAR(40) NOT NULL UNIQUE, emitido_em DATETIME DEFAULT CURRENT_TIMESTAMP, "
-            + "CONSTRAINT fk_doc_usr FOREIGN KEY (aluno_id) REFERENCES USUARIO(usuario_id) ON DELETE CASCADE) ENGINE=InnoDB"
+            + "CONSTRAINT fk_doc_usr FOREIGN KEY (aluno_id) REFERENCES USUARIO(usuario_id) ON DELETE CASCADE) ENGINE=InnoDB",
+        "CREATE TABLE IF NOT EXISTS MATERIAL (material_id INT AUTO_INCREMENT PRIMARY KEY, turma_id INT NOT NULL, "
+            + "titulo VARCHAR(150) NOT NULL, arquivo_nome VARCHAR(255) NOT NULL, arquivo_caminho VARCHAR(500) NOT NULL, "
+            + "tamanho_bytes BIGINT NOT NULL DEFAULT 0, publicado_em DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + "CONSTRAINT fk_material_turma FOREIGN KEY (turma_id) REFERENCES TURMA(turma_id) ON DELETE CASCADE) ENGINE=InnoDB"
     };
 
     static void garantir(Connection conn) throws SQLException {
@@ -268,6 +272,15 @@ final class ConteudoSchema {
                     "Projeto de Iniciação Científica", "Pesquisa orientada por professor, com apresentação final.", hoje.plusDays(20));
             exec(c, "INSERT INTO EXTENSAO (nome, descricao, carga_horaria, inscricoes_ate, vagas) VALUES (?, ?, 20, ?, 40)",
                     "Curso de Libras", "Introdução à Língua Brasileira de Sinais (online).", hoje.plusDays(45));
+        }
+
+        // Projeto de demonstração do A3, ligado ao ODS 4 (Educação de Qualidade)
+        if (escalar(c, "SELECT COUNT(*) FROM PROJETO") == 0) {
+            exec(c, "INSERT INTO PROJETO (codigo, descricao, ods, responsavel, telefone, data_criacao, status) "
+                    + "VALUES (?, ?, 4, ?, ?, ?, 'EM_ANDAMENTO')", "PRJ-001",
+                    "Ulife 2.0 — plataforma acadêmica integrada para o ensino híbrido, que centraliza aulas, atividades, "
+                            + "notas, frequência e pagamentos para ampliar o acesso a uma educação de qualidade.",
+                    "Kaike Munhoz Venditti", "(11) 98888-0000", LocalDate.of(2026, 8, 10));
         }
 
         // Atividades complementares do aluno de demonstração

@@ -75,8 +75,16 @@ public class TelaPrincipal extends JFrame {
     private int secGestaoPag = -1;
     private final AcademicoDAO academicoDAO = new AcademicoDAO();
 
+    /** Secretaria e tesouraria (perfis legados) foram incorporadas à coordenação e usam o mesmo menu. */
+    private static Usuario normalizarPerfil(Usuario u) {
+        if (u.getPerfil() == Usuario.Perfil.SECRETARIA || u.getPerfil() == Usuario.Perfil.TESOURARIA) {
+            u.setPerfil(Usuario.Perfil.COORDENADOR);
+        }
+        return u;
+    }
+
     public TelaPrincipal(Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
+        this.usuarioLogado = normalizarPerfil(usuarioLogado);
         criarSecoes();
         atualizarPendencias();
         initComponents();
@@ -89,7 +97,7 @@ public class TelaPrincipal extends JFrame {
     /** Monta o menu conforme o perfil: aluno, professor ou coordenador. */
     private void criarSecoes() {
         Secao aulas = new Secao(Tipo.MON, "Aulas", "Tudo o que é necessário para sua rotina de estudos",
-                new String[]{"Quadro de Aulas", "Aulas Gravadas", "Minhas UCs", "Atividades Avaliativas", "Notas/Faltas",
+                new String[]{"Quadro de Aulas", "Gravações e Materiais", "Minhas UCs", "Atividades Avaliativas", "Notas/Faltas",
                         "Plano de Ensino", "Agendamento de Avaliações", "Bibliotecas Online", "Biblioteca Física"},
                 new int[]{2, 0, 3, 4, 5, 6, 7, 8},
                 () -> PaginasAluno.quadro(usuarioLogado), () -> PaginasAluno.gravadas(usuarioLogado),
@@ -112,19 +120,6 @@ public class TelaPrincipal extends JFrame {
                 () -> PaginasAluno.planoCurricular(usuarioLogado), () -> PaginasAluno.declaracao(usuarioLogado),
                 () -> PaginasAluno.hibridez(usuarioLogado));
 
-        Secao academia = new Secao(Tipo.BAG, "Academia de Futuros Profissionais",
-                "(Estágios, Buscador de vagas, Simulador de entrevistas IA, e Programas NEST/HUB)",
-                new String[]{"Portal Academia de Futuros Profissionais"}, new int[]{0},
-                Paginas::portalAcademia);
-
-        Secao servicos = new Secao(Tipo.LIB, "Serviços", "Acesso aos processos e documentos acadêmicos",
-                new String[]{"Rematrícula", "Atendimento", "Meus Contratos"}, new int[]{0, 1, 2},
-                Paginas::rematricula, Paginas::atendimento, Paginas::meusContratos);
-
-        Secao comunicacao = new Secao(Tipo.MAIL, "Comunicação", "Encontre os avisos recebidos e envie mensagens",
-                new String[]{"Conectados", "Avisos", "Mensagens", "Notificações"}, new int[]{0, 1, 2, 3},
-                Paginas::conectados, Paginas::avisos, Paginas::mensagens, Paginas::notificacoes);
-
         Secao projetos = new Secao(Tipo.FLAG, "Projetos ODS",
                 "Cadastro, consulta, alteração e exclusão de projetos ligados aos ODS",
                 new String[]{"Projetos"}, new int[]{0},
@@ -142,6 +137,12 @@ public class TelaPrincipal extends JFrame {
         Secao profAulas = new Secao(Tipo.MON, "Aulas", "Seu quadro semanal de aulas",
                 new String[]{"Quadro de Aulas"}, new int[]{0},
                 () -> new QuadroAulasProfessor(usuarioLogado, () -> navegar(secFrequencia, 0)));
+        Secao profAtividades = new Secao(Tipo.DOC, "Atividades", "Publique atividades, acompanhe as entregas e corrija",
+                new String[]{"Atividades e entregas"}, new int[]{0},
+                () -> new PainelProfAtividades(usuarioLogado));
+        Secao profMateriais = new Secao(Tipo.BOOK, "Materiais", "Envie arquivos de apoio para os alunos das suas turmas",
+                new String[]{"Materiais das turmas"}, new int[]{0},
+                () -> new PainelProfMateriais(usuarioLogado));
         Secao profTurmas = new Secao(Tipo.USERS, "Minhas turmas", "Suas turmas, alunos, frequência e médias",
                 new String[]{"Turmas e alunos"}, new int[]{0},
                 () -> new PainelProfTurmas(usuarioLogado));
@@ -174,9 +175,6 @@ public class TelaPrincipal extends JFrame {
             secoes.add(aulas);
             secoes.add(pagamentos);
             secoes.add(curso);
-            secoes.add(academia);
-            secoes.add(servicos);
-            secoes.add(comunicacao);
         } else if (perfil == Usuario.Perfil.COORDENADOR) { // menu enxuto: só gestão
             secoes.add(coordInicio);
             secoes.add(coordTurmas);
@@ -189,6 +187,8 @@ public class TelaPrincipal extends JFrame {
             secoes.add(profInicio);
             secoes.add(profAulas);
             secoes.add(profTurmas);
+            secoes.add(profAtividades);
+            secoes.add(profMateriais);
             secoes.add(profNotas);
             secoes.add(profFreq);
             secNotas = secoes.indexOf(profNotas);
@@ -347,26 +347,17 @@ public class TelaPrincipal extends JFrame {
             atualizarPendencias();
         }
 
-        JButton campus = new JButton("IUSJ SÃO BERNARDO - 430");
+        JLabel campus = new JLabel("IUSJ SÃO BERNARDO - 430");
         campus.setIcon(new Icone(Tipo.PIN, 22, Estilo.AC));
         campus.setIconTextGap(10);
         campus.setToolTipText("IUSJ SÃO BERNARDO - São Bernardo do Campo - 430");
         campus.setHorizontalTextPosition(SwingConstants.RIGHT);
         campus.setFont(Estilo.fonte(Font.PLAIN, 13));
         campus.setForeground(Estilo.TX);
-        campus.setContentAreaFilled(false);
-        campus.setFocusPainted(false);
         campus.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Estilo.BD),
                 BorderFactory.createEmptyBorder(8, 14, 8, 14)));
-        campus.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        campus.addActionListener(e -> Estilo.aviso(this, "Seletor de campus/organização (em desenvolvimento)."));
         dir.add(campus);
-
-        BotaoIcone acc = new BotaoIcone(Tipo.ACC, 26, false);
-        acc.setToolTipText("Acessibilidade");
-        acc.addActionListener(e -> Estilo.aviso(this, "Recursos de acessibilidade (em desenvolvimento)."));
-        dir.add(acc);
 
         BotaoIcone sino = new BotaoIcone(Tipo.BELL, 26, false);
         sino.setToolTipText("Notificações");
@@ -382,9 +373,6 @@ public class TelaPrincipal extends JFrame {
         JMenuItem itemOla = new JMenuItem("Olá, " + usuarioLogado.getNome());
         itemOla.setEnabled(false);
         itemOla.setFont(Estilo.fonte(Font.PLAIN, 13));
-        JMenuItem tema = new JMenuItem("Alternar tema claro/escuro");
-        tema.setFont(Estilo.fonte(Font.PLAIN, 14));
-        tema.addActionListener(e -> Estilo.aviso(this, "Alternância de tema (em desenvolvimento)."));
         JMenuItem sair = new JMenuItem("Sair");
         sair.setFont(Estilo.fonte(Font.PLAIN, 14));
         sair.addActionListener(e -> sair());
@@ -394,7 +382,6 @@ public class TelaPrincipal extends JFrame {
         popConta.add(itemOla);
         popConta.add(itemPerfil);
         popConta.addSeparator();
-        popConta.add(tema);
         popConta.add(sair);
         conta.addActionListener(e -> popConta.show(conta, conta.getWidth() - 200, conta.getHeight() + 4));
         dir.add(conta);
@@ -679,11 +666,33 @@ public class TelaPrincipal extends JFrame {
         List<String[]> l = new ArrayList<>();
         try {
             switch (usuarioLogado.getPerfil()) {
-                case ALUNO:
-                    l.add(new String[]{"Rematrícula aberta", "Secretaria · Prazo até 15/10"});
-                    l.add(new String[]{"Nova nota lançada", "Banco de Dados · Quiz 02"});
-                    l.add(new String[]{"Aula gravada disponível", "Modelagem de Software"});
+                case ALUNO: {
+                    int id = usuarioLogado.getUsuarioId();
+                    int pend = cobrancaDAO.contarPendentes(id);
+                    if (pend > 0) {
+                        l.add(new String[]{"Mensalidades pendentes", pend + (pend == 1 ? " mensalidade em aberto ou vencida"
+                                : " mensalidades em aberto ou vencidas")});
+                    }
+                    br.com.ulife.dao.PortalAlunoDAO pa = new br.com.ulife.dao.PortalAlunoDAO();
+                    long ativ = pa.atividades(id).stream().filter(a -> "Pendente".equals(a.status())).count();
+                    if (ativ > 0) {
+                        l.add(new String[]{"Atividades com prazo próximo", ativ + (ativ == 1 ? " atividade" : " atividades")
+                                + " para entregar nos próximos 7 dias"});
+                    }
+                    java.time.LocalDate hoje = java.time.LocalDate.now();
+                    long aval = pa.avaliacoes(id).stream().filter(av -> !av.agendarAte().isBefore(hoje)
+                            && av.horarios().stream().noneMatch(br.com.ulife.dao.PortalAlunoDAO.Horario::meu)).count();
+                    if (aval > 0) {
+                        l.add(new String[]{"Avaliações para agendar", aval + (aval == 1 ? " avaliação" : " avaliações")
+                                + " sem horário escolhido"});
+                    }
+                    long baixa = academicoDAO.boletim(id).stream()
+                            .filter(b -> b.frequencia() != null && b.frequencia() < 75).count();
+                    if (baixa > 0) {
+                        l.add(new String[]{"Frequência abaixo de 75%", "em " + baixa + (baixa == 1 ? " turma" : " turmas")});
+                    }
                     break;
+                }
                 case PROFESSOR: {
                     int freq = academicoDAO.pendenciasDeFrequencia(usuarioLogado.getUsuarioId()).size();
                     if (freq > 0) {

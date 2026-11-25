@@ -33,6 +33,11 @@ vencidas, pagas), a lista de mensalidades e paga por **PIX** (QR Code real + cop
 **boleto** (linha digitável). O pagamento é um **ambiente de demonstração**: nenhum valor real é cobrado e o botão
 "Já paguei" simula a confirmação do banco. O histórico mostra o protocolo de cada transação.
 
+## Documentação (Projeto A3)
+- `docs/Ulife_2_0_Projeto_A3_Documentacao_Atualizada.docx` — documentação atualizada (ODS 4, escopo do MVP, requisitos,
+  protótipo com capturas das telas, UML, DER e modelo físico do MySQL). Ao abrir no Word, atualize o índice (F9).
+- `docs/esquema_mysql.sql` — DDL completo das 25 tabelas, exportado do banco implementado.
+
 ## Como rodar
 1. Suba o MySQL: `docker compose up -d` (usa `docker-compose.yml`; ajuste `src/main/resources/database.properties`
    se o seu container tiver outro host/porta/senha).

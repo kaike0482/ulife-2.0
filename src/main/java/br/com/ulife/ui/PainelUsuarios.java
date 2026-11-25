@@ -42,7 +42,7 @@ public class PainelUsuarios extends JPanel {
     private final JTextField txtEmail = Estilo.campo();
     private final JTextField txtTelefone = Estilo.campo();
     private final JPasswordField txtSenha = Estilo.campoSenha();
-    private final JComboBox<Usuario.Perfil> cmbPerfil = new JComboBox<>(Usuario.Perfil.values());
+    private final JComboBox<Usuario.Perfil> cmbPerfil = new JComboBox<>(new Usuario.Perfil[]{Usuario.Perfil.ALUNO, Usuario.Perfil.PROFESSOR, Usuario.Perfil.COORDENADOR});
     private final JLabel lblErro = Estilo.rotulo(" ", Font.PLAIN, 13, Estilo.ERRO);
     private Usuario emEdicao; // null = novo
 
@@ -236,6 +236,14 @@ public class PainelUsuarios extends JPanel {
         emEdicao = u;
         lblErro.setText(" ");
         txtSenha.setText("");
+        cmbPerfil.removeAllItems();
+        cmbPerfil.addItem(Usuario.Perfil.ALUNO);
+        cmbPerfil.addItem(Usuario.Perfil.PROFESSOR);
+        cmbPerfil.addItem(Usuario.Perfil.COORDENADOR);
+        if (u != null && u.getPerfil() != null && ((DefaultComboBoxModel<Usuario.Perfil>) cmbPerfil.getModel())
+                .getIndexOf(u.getPerfil()) < 0) {
+            cmbPerfil.addItem(u.getPerfil()); // conta legada (secretaria/tesouraria): mantém o perfil ao alterar
+        }
         if (u == null) {
             lblTituloForm.setText("Novo usuário");
             txtUsuario.setText("");

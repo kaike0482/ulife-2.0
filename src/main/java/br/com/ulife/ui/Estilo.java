@@ -201,7 +201,7 @@ public final class Estilo {
         Color vmBg = new Color(0xf9dede), vm = new Color(0xa32b2b);
         switch (s) {
             case "Entregue": case "Regular": case "Validada": case "Assinado": case "Concluído":
-            case "Paga": case "Confirmado": case "CONFIRMADO": case "Presente": case "Aprovado": case "Lançada": case "Concluída": case "Disponível": case "Agendado":
+            case "Paga": case "Confirmado": case "CONFIRMADO": case "Presente": case "Aprovado": case "Lançada": case "Corrigida": case "Concluída": case "Disponível": case "Agendado":
                 return new Color[]{vdBg, vd};
             case "Pendente": case "Em andamento": case "Pendente de lançamento": case "A lançar":
                 return new Color[]{amBg, am};

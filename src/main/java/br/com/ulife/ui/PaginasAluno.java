@@ -178,8 +178,34 @@ public final class PaginasAluno {
                 b.addActionListener(e -> abrirUrl(b, g.url()));
                 l.add(cartao(Tipo.MON, g.turma(), b, "Aula de " + g.data().format(DATA)));
             }
-            return grade(l, "Ainda não há aulas gravadas das suas turmas.");
+            return pilha(secao("Aulas gravadas"), grade(l, "Ainda não há aulas gravadas das suas turmas."),
+                    secao("Materiais das aulas"), materiais(u));
         });
+    }
+
+    /** Materiais publicados pelos professores nas turmas do aluno. */
+    private static JComponent materiais(Usuario u) {
+        List<JComponent> l = new ArrayList<>();
+        List<MaterialAluno> lista = DAO.materiais(u.getUsuarioId());
+        for (int i = 0; i < lista.size(); i++) {
+            MaterialAluno m = lista.get(i);
+            Estilo.Botao b = Estilo.primario("Abrir");
+            b.addActionListener(e -> {
+                java.io.File f = m.caminho() == null ? null : new java.io.File(m.caminho());
+                if (f == null || !f.isFile()) {
+                    Estilo.erro(b, "O arquivo não está disponível neste computador.");
+                    return;
+                }
+                try {
+                    Desktop.getDesktop().open(f);
+                } catch (Exception ex) {
+                    Estilo.erro(b, "Não foi possível abrir o arquivo: " + f.getName());
+                }
+            });
+            l.add(linha(Tipo.DOC, m.titulo(), m.turma() + " · " + m.arquivoNome() + " · publicado em "
+                    + m.publicado().format(DATA), i == 0, b));
+        }
+        return lista(l, "Os professores ainda não publicaram materiais.");
     }
 
     public static JComponent ucs(Usuario u) {
@@ -222,7 +248,9 @@ public final class PaginasAluno {
                 JLabel info = Estilo.rotulo("Prazo " + a.prazo().format(DATA_HORA) + " · peso " + nota(a.peso()),
                         Font.PLAIN, 13, Estilo.MU);
                 JComponent acao;
-                if (a.protocolo() != null) {
+                if ("Corrigida".equals(a.status())) {
+                    acao = Estilo.rotulo("Nota " + nota(a.nota()), Font.BOLD, 15, Estilo.OK);
+                } else if (a.protocolo() != null) {
                     acao = Estilo.rotulo("Protocolo " + a.protocolo(), Font.PLAIN, 12, Estilo.MU);
                 } else if ("Atrasada".equals(a.status())) {
                     acao = Estilo.rotulo("Prazo expirado", Font.PLAIN, 13, Estilo.ERRO);
@@ -231,8 +259,9 @@ public final class PaginasAluno {
                     b.addActionListener(e -> entregar(b, u, a, recarregar));
                     acao = b;
                 }
-                l.add(linha(Tipo.DOC, a.titulo() + "  ·  " + a.turma(), a.descricao() == null ? "" : resumo(a.descricao()),
-                        i == 0, info, new Estilo.Tag(a.status()), acao));
+                String sub = "Corrigida".equals(a.status()) && a.feedback() != null ? "Comentário do professor: " + resumo(a.feedback())
+                        : a.descricao() == null ? "" : resumo(a.descricao());
+                l.add(linha(Tipo.DOC, a.titulo() + "  ·  " + a.turma(), sub, i == 0, info, new Estilo.Tag(a.status()), acao));
             }
             return lista(l, "Nenhuma atividade publicada para as suas turmas.");
         }));
