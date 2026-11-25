@@ -92,6 +92,7 @@ public final class SchemaInitializer {
             sincronizarPapeis(conn);
             semearCobrancasDoAluno(conn);
             semearAcademico(conn);
+            ConteudoSchema.garantir(conn);
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao preparar o banco de dados: " + e.getMessage(), e);
         }
@@ -290,7 +291,7 @@ public final class SchemaInitializer {
         }
     }
 
-    private static boolean colunaExiste(Connection conn, String tabela, String coluna) throws SQLException {
+    static boolean colunaExiste(Connection conn, String tabela, String coluna) throws SQLException {
         String sql = "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() "
                 + "AND TABLE_NAME = ? AND COLUMN_NAME = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

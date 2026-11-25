@@ -92,8 +92,11 @@ public class TelaPrincipal extends JFrame {
                 new String[]{"Quadro de Aulas", "Aulas Gravadas", "Minhas UCs", "Atividades Avaliativas", "Notas/Faltas",
                         "Plano de Ensino", "Agendamento de Avaliações", "Bibliotecas Online", "Biblioteca Física"},
                 new int[]{2, 0, 3, 4, 5, 6, 7, 8},
-                Paginas::quadro, Paginas::gravadas, Paginas::ucs, Paginas::atividades, () -> new PainelNotasFaltas(usuarioLogado),
-                Paginas::planoEnsino, Paginas::agendamento, Paginas::bibliotecasOnline, Paginas::bibliotecaFisica);
+                () -> PaginasAluno.quadro(usuarioLogado), () -> PaginasAluno.gravadas(usuarioLogado),
+                () -> PaginasAluno.ucs(usuarioLogado), () -> PaginasAluno.atividades(usuarioLogado),
+                () -> new PainelNotasFaltas(usuarioLogado), () -> PaginasAluno.plano(usuarioLogado),
+                () -> PaginasAluno.agendamento(usuarioLogado), () -> PaginasAluno.biblioteca(usuarioLogado, true),
+                () -> PaginasAluno.biblioteca(usuarioLogado, false));
 
         Secao pagamentos = new Secao(Tipo.CARD, "Pagamentos",
                 "Mensalidades, pagamento por PIX ou boleto e histórico de pagamentos",
@@ -104,8 +107,10 @@ public class TelaPrincipal extends JFrame {
                 new String[]{"Certificados", "Histórico Escolar", "Extensão", "Atividades Complementares", "Plano Curricular",
                         "Declaração de Regularidade Acadêmica", "Percentual de Hibridez"},
                 new int[]{0, 1, 2, 3, 4, 5, 6},
-                Paginas::certificados, Paginas::historico, Paginas::extensao, Paginas::atividadesComplementares,
-                Paginas::planoCurricular, Paginas::declaracaoRegularidade, Paginas::percentualHibridez);
+                () -> PaginasAluno.certificados(usuarioLogado), () -> PaginasAluno.historico(usuarioLogado),
+                () -> PaginasAluno.extensao(usuarioLogado), () -> PaginasAluno.atividadesComplementares(usuarioLogado),
+                () -> PaginasAluno.planoCurricular(usuarioLogado), () -> PaginasAluno.declaracao(usuarioLogado),
+                () -> PaginasAluno.hibridez(usuarioLogado));
 
         Secao academia = new Secao(Tipo.BAG, "Academia de Futuros Profissionais",
                 "(Estágios, Buscador de vagas, Simulador de entrevistas IA, e Programas NEST/HUB)",
@@ -156,6 +161,10 @@ public class TelaPrincipal extends JFrame {
                 "Cobranças, inadimplência e pagamentos recebidos dos alunos",
                 new String[]{"Pagamentos"}, new int[]{0},
                 PainelGestaoPagamentos::new);
+        Secao coordValidacoes = new Secao(Tipo.DOC, "Validações",
+                "Atividades complementares dos alunos aguardando validação",
+                new String[]{"Validações"}, new int[]{0},
+                PainelValidacoes::new);
         Secao coordTurmas = new Secao(Tipo.CAP, "Turmas", "Cadastro de turmas, professores e matrículas",
                 new String[]{"Gestão de turmas"}, new int[]{0},
                 PainelTurmas::new);
@@ -172,6 +181,7 @@ public class TelaPrincipal extends JFrame {
             secoes.add(coordInicio);
             secoes.add(coordTurmas);
             secoes.add(coordPagamentos);
+            secoes.add(coordValidacoes);
             secoes.add(usuarios);
             secoes.add(projetos);
             secGestaoPag = secoes.indexOf(coordPagamentos);
