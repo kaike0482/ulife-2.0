@@ -92,7 +92,7 @@ public class TelaPrincipal extends JFrame {
                 new String[]{"Quadro de Aulas", "Aulas Gravadas", "Minhas UCs", "Atividades Avaliativas", "Notas/Faltas",
                         "Plano de Ensino", "Agendamento de Avaliações", "Bibliotecas Online", "Biblioteca Física"},
                 new int[]{2, 0, 3, 4, 5, 6, 7, 8},
-                Paginas::quadro, Paginas::gravadas, Paginas::ucs, Paginas::atividades, Paginas::notasFaltas,
+                Paginas::quadro, Paginas::gravadas, Paginas::ucs, Paginas::atividades, () -> new PainelNotasFaltas(usuarioLogado),
                 Paginas::planoEnsino, Paginas::agendamento, Paginas::bibliotecasOnline, Paginas::bibliotecaFisica);
 
         Secao pagamentos = new Secao(Tipo.CARD, "Pagamentos",

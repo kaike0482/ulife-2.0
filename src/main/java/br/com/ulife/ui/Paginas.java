@@ -150,10 +150,6 @@ public final class Paginas {
         return Estilo.tabelaSemRolagem(t);
     }
 
-    private static String nota(double v) {
-        return String.format("%.1f", v).replace('.', ',');
-    }
-
     // ------------------------------------------------------------------ AULAS
 
     public static JComponent quadro() { return new QuadroAulas(); }
@@ -237,14 +233,6 @@ public final class Paginas {
                 {"Seminário", QuadroAulas.C.nome, "21/10", "3,0", "Pendente"},
                 {"Quiz 02", QuadroAulas.D.nome, "25/09", "1,0", "Entregue"}};
         return tabela(new String[]{"Atividade", "Unidade de Curso", "Entrega", "Peso", "Status"}, r, "Status");
-    }
-
-    public static JComponent notasFaltas() {
-        Object[][] r = new Object[4][];
-        for (int i = 0; i < 4; i++) {
-            r[i] = new Object[]{UCS[i].nome, nota(7 + i * 0.6), nota(6.5 + i * 0.7), String.valueOf(i * 2), "Regular"};
-        }
-        return tabela(new String[]{"UC", "N1", "N2", "Faltas", "Situação"}, r, "Situação");
     }
 
     public static JComponent planoEnsino() {

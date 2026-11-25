@@ -221,6 +221,70 @@ public class AcademicoDAO {
         return mapa;
     }
 
+    // ------------------------------------------------------------------ boletim do aluno
+
+    /** Notas e frequência de um aluno em uma turma. */
+    public static class Boletim {
+        public String codigo, turma, professor;
+        public final Map<String, BigDecimal> notas = new HashMap<>();
+        public int presencas, aulas;
+
+        public BigDecimal media() { return AcademicoDAO.media(notas); }
+        public int faltas() { return aulas - presencas; }
+        public Double frequencia() { return aulas == 0 ? null : presencas * 100.0 / aulas; }
+    }
+
+    /** Boletim do aluno: uma linha por turma em que está matriculado, com os lançamentos do professor. */
+    public List<Boletim> boletim(int usuarioId) {
+        Map<Integer, Boletim> porMatricula = new java.util.LinkedHashMap<>();
+        try (Connection conn = db.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT m.matricula_id, t.codigo, t.nome, u.nome "
+                    + "FROM MATRICULA m JOIN TURMA t ON t.turma_id = m.turma_id "
+                    + "JOIN USUARIO u ON u.usuario_id = t.professor_id "
+                    + "WHERE m.aluno_id = ? AND m.status = 'ATIVA' AND t.ativo = TRUE ORDER BY t.nome")) {
+                ps.setInt(1, usuarioId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Boletim b = new Boletim();
+                        b.codigo = rs.getString(2);
+                        b.turma = rs.getString(3);
+                        b.professor = rs.getString(4);
+                        porMatricula.put(rs.getInt(1), b);
+                    }
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("SELECT n.matricula_id, n.tipo_avaliacao, n.valor FROM NOTA n "
+                    + "JOIN MATRICULA m ON m.matricula_id = n.matricula_id WHERE m.aluno_id = ?")) {
+                ps.setInt(1, usuarioId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Boletim b = porMatricula.get(rs.getInt(1));
+                        if (b != null) {
+                            b.notas.put(rs.getString(2), rs.getBigDecimal(3));
+                        }
+                    }
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("SELECT f.matricula_id, SUM(f.presenca), COUNT(*) "
+                    + "FROM FREQUENCIA f JOIN MATRICULA m ON m.matricula_id = f.matricula_id "
+                    + "WHERE m.aluno_id = ? AND f.lancada = TRUE GROUP BY f.matricula_id")) {
+                ps.setInt(1, usuarioId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Boletim b = porMatricula.get(rs.getInt(1));
+                        if (b != null) {
+                            b.presencas = rs.getInt(2);
+                            b.aulas = rs.getInt(3);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao consultar o boletim: " + e.getMessage(), e);
+        }
+        return new ArrayList<>(porMatricula.values());
+    }
+
     // ------------------------------------------------------------------ indicadores
 
     public Indicadores indicadores() {
