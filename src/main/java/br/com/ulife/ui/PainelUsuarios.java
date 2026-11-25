@@ -242,7 +242,7 @@ public class PainelUsuarios extends JPanel {
         cmbPerfil.addItem(Usuario.Perfil.COORDENADOR);
         if (u != null && u.getPerfil() != null && ((DefaultComboBoxModel<Usuario.Perfil>) cmbPerfil.getModel())
                 .getIndexOf(u.getPerfil()) < 0) {
-            cmbPerfil.addItem(u.getPerfil()); // conta legada (secretaria/tesouraria): mantém o perfil ao alterar
+            cmbPerfil.addItem(u.getPerfil());
         }
         if (u == null) {
             lblTituloForm.setText("Novo usuário");

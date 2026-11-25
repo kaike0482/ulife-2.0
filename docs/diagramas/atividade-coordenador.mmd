@@ -1,0 +1,57 @@
+```mermaid
+flowchart TD
+    A([Início]) --> B{Autenticado?}
+    B -- Não --> C[Tela de Login]
+    C --> D[Informa credenciais]
+    D --> E{Credenciais válidas?}
+    E -- Não --> C
+    E -- Sim --> F[Abre TelaPrincipal - Perfil Coordenador]
+    B -- Sim --> F
+
+    F --> G[Seleciona: Início (Indicadores)]
+    G --> H[Visualiza: total alunos, professores, turmas, inadimplência, arrecadação]
+
+    F --> I[Seleciona: Turmas]
+    I --> J{Escolhe ação}
+    J -- Nova Turma --> K[Preenche: código, nome, descrição, professor, semestre, ano, carga horária]
+    K --> L[Salva]
+    L --> M[Turma criada]
+    M --> I
+    J -- Matricular Alunos --> N[Seleciona turma + alunos]
+    N --> O[Confirma matrículas]
+    O --> P[Matrículas ativas]
+    P --> I
+
+    F --> Q[Seleciona: Pagamentos]
+    Q --> R{Escolhe aba}
+    R -- Cobranças --> S[Lista todas cobranças + filtros]
+    S --> T{Nova cobrança?}
+    T -- Sim --> U[Preenche: aluno, descrição, valor, vencimento]
+    U --> V[Salva]
+    V --> S
+    T -- Não --> S
+    R -- Inadimplência --> W[Lista alunos com mensalidades vencidas]
+    R -- Recebimentos --> X[Histórico de pagamentos confirmados]
+
+    F --> Y[Seleciona: Usuários]
+    Y --> Z{Escolhe ação}
+    Z -- Novo Usuário --> AA[Preenche: usuário, nome, e-mail, telefone, senha, perfil]
+    AA --> AB[Salva]
+    AB --> AC[Usuário criado]
+    AC --> Y
+    Z -- Alterar/Excluir --> AD[Seleciona na lista]
+    AD --> AE[Edita ou confirma exclusão]
+    AE --> Y
+
+    F --> AF[Seleciona: Projetos ODS]
+    AF --> AG{Escolhe ação}
+    AG -- Novo Projeto --> AH[Preenche: código, descrição, ODS 1-17, responsável, telefone, data, status]
+    AH --> AI[Salva]
+    AI --> AJ[Projeto criado]
+    AJ --> AF
+    AG -- Alterar/Excluir --> AK[Seleciona na lista]
+    AK --> AL[Edita ou confirma exclusão]
+    AL --> AF
+
+    F --> AM([Fim / Logout])
+```

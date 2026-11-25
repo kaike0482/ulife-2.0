@@ -217,17 +217,45 @@ public final class SchemaInitializer {
         }
     }
 
+    private static final String SENHA_ANTIGA = "123456";
+
+    private static boolean usaSenha(String hash, String senha) {
+        try {
+            return hash != null && BCrypt.checkpw(senha, hash);
+        } catch (IllegalArgumentException hashInvalido) {
+            return false;
+        }
+    }
+
     /** Cria a conta de demonstração apenas se o usuário e o e-mail ainda não existirem. */
     private static void garantirUsuario(Connection conn, String usuario, String nome, String email, String telefone,
                                         String senha, String perfil) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("SELECT 1 FROM USUARIO WHERE usuario = ? OR email = ?")) {
+        Integer idExistente = null;
+        String hashExistente = null;
+        boolean mesmoUsuario = false;
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT usuario_id, usuario, senha_hash FROM USUARIO WHERE usuario = ? OR email = ?")) {
             ps.setString(1, usuario);
             ps.setString(2, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return;
+                    idExistente = rs.getInt(1);
+                    mesmoUsuario = usuario.equals(rs.getString(2));
+                    hashExistente = rs.getString(3);
                 }
             }
+        }
+        if (idExistente != null) {
+            // Conta de um banco antigo que ainda usa a senha padrão antiga (123456): passa a usar a senha de
+            // demonstração documentada. Contas cuja senha já foi trocada nunca são alteradas.
+            if (mesmoUsuario && !SENHA_ANTIGA.equals(senha) && usaSenha(hashExistente, SENHA_ANTIGA)) {
+                try (PreparedStatement up = conn.prepareStatement("UPDATE USUARIO SET senha_hash = ? WHERE usuario_id = ?")) {
+                    up.setString(1, BCrypt.hashpw(senha, BCrypt.gensalt()));
+                    up.setInt(2, idExistente);
+                    up.executeUpdate();
+                }
+            }
+            return;
         }
         String sql = "INSERT INTO USUARIO (usuario, nome, email, telefone, senha_hash, perfil, ativo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, TRUE)";

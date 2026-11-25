@@ -406,7 +406,7 @@ CREATE TABLE `USUARIO` (
   `email` varchar(150) NOT NULL,
   `telefone` varchar(20) DEFAULT NULL,
   `senha_hash` varchar(255) NOT NULL,
-  `perfil` enum('ALUNO','PROFESSOR','SECRETARIA','TESOURARIA','COORDENADOR') NOT NULL DEFAULT 'ALUNO',
+  `perfil` enum('ALUNO','PROFESSOR','COORDENADOR') NOT NULL DEFAULT 'ALUNO',
   `ativo` tinyint(1) NOT NULL DEFAULT '1',
   `criado_em` datetime DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

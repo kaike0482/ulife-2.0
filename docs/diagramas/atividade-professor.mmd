@@ -1,0 +1,50 @@
+```mermaid
+flowchart TD
+    A([Início]) --> B{Autenticado?}
+    B -- Não --> C[Tela de Login]
+    C --> D[Informa credenciais]
+    D --> E{Credenciais válidas?}
+    E -- Não --> C
+    E -- Sim --> F[Abre TelaPrincipal - Perfil Professor]
+    B -- Sim --> F
+
+    F --> G[Seleciona: Início (Pendências)]
+    G --> H[Visualiza atividades a corrigir + aulas a lançar frequência]
+
+    F --> I[Seleciona: Aulas]
+    I --> J[Quadro semanal das turmas do professor]
+
+    F --> K[Seleciona: Minhas Turmas]
+    K --> L[Lista turmas + alunos matriculados]
+
+    F --> M[Seleciona: Lançar Atividades]
+    M --> N{Escolhe ação}
+    N -- Nova Atividade --> O[Preenche: título, descrição, arquivo, data entrega, peso]
+    O --> P[Salva]
+    P --> Q[Atividade publicada]
+    Q --> M
+    N -- Novo Material --> R[Preenche: título, descrição, arquivo]
+    R --> S[Salva]
+    S --> T[Material publicado]
+    T --> M
+
+    F --> U[Seleciona: Lançar Notas]
+    U --> V[Seleciona turma + atividade]
+    V --> W[Lista entregas dos alunos]
+    W --> X{Entrega pendente correção?}
+    X -- Sim --> Y[Abre arquivo + Preenche nota + comentário]
+    Y --> Z[Salva avaliação]
+    Z --> AA[Status: Corrigida]
+    AA --> W
+    X -- Não --> W
+
+    F --> AB[Seleciona: Lançar Frequência]
+    AB --> AC[Seleciona turma + aula (data)]
+    AC --> AD[Sugestão automática: minutos de videochamada → presença ≥ 128 min]
+    AD --> AE[Confirma/ajusta presença por aluno]
+    AE --> AF[Salva frequência]
+    AF --> AG[Status: Lançada]
+    AG --> AB
+
+    F --> AH([Fim / Logout])
+```

@@ -75,16 +75,9 @@ public class TelaPrincipal extends JFrame {
     private int secGestaoPag = -1;
     private final AcademicoDAO academicoDAO = new AcademicoDAO();
 
-    /** Secretaria e tesouraria (perfis legados) foram incorporadas à coordenação e usam o mesmo menu. */
-    private static Usuario normalizarPerfil(Usuario u) {
-        if (u.getPerfil() == Usuario.Perfil.SECRETARIA || u.getPerfil() == Usuario.Perfil.TESOURARIA) {
-            u.setPerfil(Usuario.Perfil.COORDENADOR);
-        }
-        return u;
-    }
 
     public TelaPrincipal(Usuario usuarioLogado) {
-        this.usuarioLogado = normalizarPerfil(usuarioLogado);
+        this.usuarioLogado = usuarioLogado;
         criarSecoes();
         atualizarPendencias();
         initComponents();

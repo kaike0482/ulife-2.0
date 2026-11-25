@@ -1,0 +1,53 @@
+```mermaid
+flowchart TD
+    A([Início]) --> B{Autenticado?}
+    B -- Não --> C[Tela de Login]
+    C --> D[Informa credenciais]
+    D --> E{Credenciais válidas?}
+    E -- Não --> C
+    E -- Sim --> F[Abre TelaPrincipal - Perfil Aluno]
+    B -- Sim --> F
+
+    F --> G[Seleciona: Aulas]
+    G --> H{Escolhe ação}
+    H -- Quadro de Aulas --> I[Visualiza grade semanal]
+    H -- Aulas Gravadas --> J[Lista gravações disponíveis]
+    H -- Minhas UCs --> K[Progresso por unidade curricular]
+    H -- Atividades --> L[Lista atividades da turma]
+    H -- Notas/Faltas --> M[Consulta notas A1-A3 e frequência]
+
+    L --> N{Atividade com entrega aberta?}
+    N -- Sim --> O[Clica Entregar]
+    O --> P[Upload arquivo]
+    P --> Q[Confirma envio]
+    Q --> R[Status: Entregue]
+    R --> L
+    N -- Não --> L
+
+    F --> S[Seleciona: Curso]
+    S --> T{Certificados, Histórico, Extensão, Ativ. Complementares, Plano Curricular, Declaração, % Hibridez}
+    T --> U[Visualiza/Emite documento]
+
+    F --> V[Seleciona: Pagamentos]
+    V --> W[Resumo: Em aberto, Vencidas, Pagas]
+    W --> X[Seleciona mensalidade]
+    X --> Y{Escolhe método}
+    Y -- PIX --> Z[QR Code BR Code + Copia e Cola]
+    Y -- Boleto --> AA[Linha digitável simulada]
+    Z --> AB[Clica 'Já paguei']
+    AA --> AB
+    AB --> AC[Simula confirmação bancária]
+    AC --> AD[Gera protocolo]
+    AD --> AE[Status: Paga]
+    AE --> W
+
+    F --> AF[Seleciona: Comunicação]
+    AF --> AG{Conectados, Avisos, Mensagens, Notificações}
+    AG --> AH[Visualiza itens]
+
+    F --> AI[Seleciona: Serviços]
+    AI --> AJ{Rematrícula, Atendimento, Contratos}
+    AJ --> AK[Visualiza/Inicia processo]
+
+    F --> AL([Fim / Logout])
+```

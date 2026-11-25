@@ -15,7 +15,7 @@ public class Usuario {
     private LocalDateTime atualizadoEm;
 
     public enum Perfil {
-        ALUNO, PROFESSOR, SECRETARIA, TESOURARIA, COORDENADOR
+        ALUNO, PROFESSOR, COORDENADOR
     }
 
     public Usuario() {}

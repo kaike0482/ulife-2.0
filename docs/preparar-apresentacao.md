@@ -42,12 +42,12 @@ ao mesmo tempo; será preciso subir o do Ulife em outra porta e ajustar `src/mai
 - Roteiro sugerido do fluxo novo: professor publica uma atividade e envia um material; aluno entrega; professor corrige com nota e comentário; aluno vê a nota.
 
 ## 4. Pendências em aberto (decidir depois)
-- [ ] Fazer o app redefinir as senhas de demonstração (aluno123 / admin123) ao abrir, para não depender do 123456.
+- [x] Fazer o app redefinir as senhas de demonstração (aluno123 / admin123) ao abrir, para não depender do 123456. (Implementado em SchemaInitializer.garantirUsuario - migra senha antiga 123456 para as documentadas)
 - [ ] Fazer o `docker-compose.yml` carregar o `bd.sql` sozinho e fixar a imagem em `mysql:8.0.46` (igual à máquina de desenvolvimento).
 - [ ] Corrigir o `mvnw` (`.mvn/wrapper/maven-wrapper.jar` corrompido).
 - [ ] Commitar e enviar (push): documentação em `docs/`, projeto ODS de demonstração (PRJ-001) e README.
 - [ ] Abrir o `.docx` no Word, atualizar o índice (F9) e conferir as páginas do DER em paisagem.
 - [ ] Capa da documentação tem 7 integrantes; o enunciado do A3 permite até 6.
-- [ ] Redesenhar os diagramas de casos de uso e de autenticação (ainda mostram SSO e tesouraria).
+- [x] Redesenhar os diagramas de casos de uso e de autenticação (removidas referências a SSO, tesouraria e secretaria).
 - [ ] Gravar o vídeo e montar o roteiro da demonstração (coordenador → professor → aluno, ~5 min).
 - [x] Professor publica atividades, vê e corrige as entregas e envia materiais (feito).

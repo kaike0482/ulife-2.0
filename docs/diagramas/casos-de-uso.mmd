@@ -1,0 +1,74 @@
+```mermaid
+useCaseDiagram
+    left to right direction
+
+    actor Aluno
+    actor Professor
+    actor Coordenador
+
+    package "Portal do Aluno" {
+        usecase "UC01: Autenticar" as UC01
+        usecase "UC02: Consultar Aulas e Gravações" as UC02
+        usecase "UC03: Consultar Atividades" as UC03
+        usecase "UC04: Entregar Atividade" as UC04
+        usecase "UC05: Consultar Notas e Faltas" as UC05
+        usecase "UC06: Consultar Curso e Certificados" as UC06
+        usecase "UC07: Pagar Mensalidade (PIX/Boleto)" as UC07
+        usecase "UC08: Consultar Histórico de Pagamentos" as UC08
+        usecase "UC09: Acessar Comunicação e Avisos" as UC09
+        usecase "UC10: Acessar Serviços (Rematrícula, Contratos)" as UC10
+    }
+
+    package "Portal do Professor" {
+        usecase "UC11: Consultar Pendências" as UC11
+        usecase "UC12: Consultar Quadro de Aulas" as UC12
+        usecase "UC13: Consultar Minhas Turmas" as UC13
+        usecase "UC14: Publicar Atividade" as UC14
+        usecase "UC15: Publicar Material" as UC15
+        usecase "UC16: Acompanhar Entregas" as UC16
+        usecase "UC17: Corrigir Entrega (Nota + Comentário)" as UC17
+        usecase "UC18: Lançar Frequência" as UC18
+    }
+
+    package "Portal da Coordenação" {
+        usecase "UC19: Consultar Indicadores" as UC19
+        usecase "UC20: Gerenciar Turmas e Matrículas" as UC20
+        usecase "UC21: Gerenciar Pagamentos e Inadimplência" as UC21
+        usecase "UC22: Gerenciar Usuários e Perfis" as UC22
+        usecase "UC23: Gerenciar Projetos ODS" as UC23
+    }
+
+    Aluno --> UC01
+    Aluno --> UC02
+    Aluno --> UC03
+    Aluno --> UC04
+    Aluno --> UC05
+    Aluno --> UC06
+    Aluno --> UC07
+    Aluno --> UC08
+    Aluno --> UC09
+    Aluno --> UC10
+
+    Professor --> UC01
+    Professor --> UC11
+    Professor --> UC12
+    Professor --> UC13
+    Professor --> UC14
+    Professor --> UC15
+    Professor --> UC16
+    Professor --> UC17
+    Professor --> UC18
+
+    Coordenador --> UC01
+    Coordenador --> UC19
+    Coordenador --> UC20
+    Coordenador --> UC21
+    Coordenador --> UC22
+    Coordenador --> UC23
+
+    UC14 ..> UC16 : <<include>>
+    UC14 ..> UC15 : <<include>>
+    UC16 ..> UC17 : <<include>>
+    UC03 ..> UC04 : <<include>>
+    UC07 ..> UC08 : <<include>>
+```

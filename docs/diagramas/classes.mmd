@@ -1,0 +1,204 @@
+```mermaid
+classDiagram
+    direction TB
+
+    class Usuario {
+        +Integer usuarioId
+        +String usuario
+        +String nome
+        +String email
+        +String telefone
+        +String senhaHash
+        +Perfil perfil
+        +Boolean ativo
+        +LocalDateTime criadoEm
+        +LocalDateTime atualizadoEm
+    }
+    class Perfil {
+        <<enumeration>>
+        ALUNO
+        PROFESSOR
+        COORDENADOR
+    }
+
+    class Aluno {
+        +Integer alunoId
+        +String ra
+    }
+    class Professor {
+        +Integer professorId
+        +String matriculaFuncional
+        +String departamento
+    }
+
+    class Turma {
+        +Integer turmaId
+        +String codigo
+        +String nome
+        +String descricao
+        +Integer professorId
+        +String semestre
+        +Integer ano
+        +Integer cargaHorariaTotal
+    }
+
+    class Matricula {
+        +Integer matriculaId
+        +Integer alunoId
+        +Integer turmaId
+        +StatusMatricula status
+    }
+    class StatusMatricula {
+        <<enumeration>>
+        ATIVA
+        TRANCADA
+        CANCELADA
+        CONCLUIDA
+    }
+
+    class Atividade {
+        +Integer atividadeId
+        +Integer turmaId
+        +String titulo
+        +String descricao
+        +LocalDateTime dataPublicacao
+        +LocalDateTime dataEntrega
+        +Double peso
+        +String arquivoUrl
+    }
+
+    class Entrega {
+        +Integer entregaId
+        +Integer atividadeId
+        +Integer matriculaId
+        +LocalDateTime dataEntrega
+        +String arquivoUrl
+        +StatusEntrega status
+    }
+    class StatusEntrega {
+        <<enumeration>>
+        PENDENTE
+        ENTREGUE
+        CORRIGIDA
+    }
+
+    class Material {
+        +Integer materialId
+        +Integer turmaId
+        +String titulo
+        +String descricao
+        +String arquivoUrl
+        +LocalDateTime dataPublicacao
+    }
+
+    class Frequencia {
+        +Integer frequenciaId
+        +Integer matriculaId
+        +LocalDate aulaData
+        +Boolean presenca
+        +Integer minutosConectado
+        +Boolean lancada
+    }
+
+    class Nota {
+        +Integer notaId
+        +Integer matriculaId
+        +String tipoAvaliacao
+        +BigDecimal valor
+    }
+
+    class Cobranca {
+        +Integer cobrancaId
+        +Integer usuarioId
+        +Integer matriculaId
+        +String descricao
+        +BigDecimal valor
+        +LocalDate vencimento
+        +StatusCobranca status
+    }
+    class StatusCobranca {
+        <<enumeration>>
+        ABERTA
+        VENCIDA
+        PAGA
+        CANCELADA
+    }
+
+    class Pagamento {
+        +Integer pagamentoId
+        +Integer cobrancaId
+        +String metodo
+        +BigDecimal valorPago
+        +LocalDateTime dataPagamento
+        +String transacaoId
+        +StatusPagamento status
+    }
+    class StatusPagamento {
+        <<enumeration>>
+        PENDENTE
+        CONFIRMADO
+        RECUSADO
+        ESTORNADO
+    }
+
+    class Projeto {
+        +Integer projetoId
+        +String codigo
+        +String descricao
+        +Integer ods
+        +String responsavel
+        +String telefone
+        +LocalDate dataCriacao
+        +StatusProjeto status
+    }
+    class StatusProjeto {
+        <<enumeration>>
+        PLANEJADO
+        EM_ANDAMENTO
+        CONCLUIDO
+        CANCELADO
+    }
+
+    class Notificacao {
+        +Integer notificacaoId
+        +Integer usuarioId
+        +String titulo
+        +String mensagem
+        +Boolean lida
+        +LocalDateTime criadoEm
+    }
+
+    class AvaliacaoEntrega {
+        +Integer avaliacaoId
+        +Integer entregaId
+        +BigDecimal nota
+        +String comentario
+        +LocalDateTime dataAvaliacao
+    }
+
+    Usuario <|-- Aluno
+    Usuario <|-- Professor
+    Usuario *-- Perfil
+    Aluno --|> Usuario : especialização
+    Professor --|> Usuario : especialização
+
+    Turma "1" -- "*" Matricula
+    Matricula "*" -- "1" Aluno
+    Matricula "*" -- "1" Turma
+    Turma "1" -- "*" Atividade
+    Turma "1" -- "*" Material
+    Turma "1" -- "1" Professor
+
+    Atividade "1" -- "*" Entrega
+    Entrega "*" -- "1" Matricula
+    Entrega "1" -- "0..1" AvaliacaoEntrega
+
+    Matricula "1" -- "*" Frequencia
+    Matricula "1" -- "*" Nota
+
+    Usuario "1" -- "*" Cobranca
+    Cobranca "1" -- "0..1" Pagamento
+
+    Usuario "1" -- "*" Projeto
+    Usuario "1" -- "*" Notificacao
+```

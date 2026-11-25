@@ -1,0 +1,32 @@
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Aluno
+    participant Pagamentos as TelaPagamentos
+    participant CobrancaDAO as CobrancaDAO
+    participant PagamentoDAO as PagamentoDAO
+    participant DB as MySQL
+
+    Aluno->>Pagamentos: Clica em "Pagar" (PIX ou Boleto)
+    Pagamentos->>CobrancaDAO: buscarPorId(cobrancaId)
+    CobrancaDAO->>DB: SELECT * FROM COBRANCA WHERE cobranca_id = ?
+    DB-->>CobrancaDAO: Retorna cobrança
+    CobrancaDAO-->>Pagamentos: Cobranca
+
+    alt PIX
+        Pagamentos->>Pagamentos: Gera QR Code (BR Code) + Copia e Cola
+        Pagamentos-->>Aluno: Exibe QR Code e código PIX
+    else Boleto
+        Pagamentos->>Pagamentos: Gera linha digitável simulada
+        Pagamentos-->>Aluno: Exibe boleto com linha digitável
+    end
+
+    Aluno->>Pagamentos: Clica "Já paguei" (simulação de confirmação bancária)
+    Pagamentos->>PagamentoDAO: inserir(cobrancaId, metodo, valor, transacaoId, CONFIRMADO)
+    PagamentoDAO->>DB: INSERT INTO PAGAMENTO ...
+    PagamentoDAO->>DB: UPDATE COBRANCA SET status = 'PAGA' WHERE cobranca_id = ?
+    DB-->>PagamentoDAO: OK
+    PagamentoDAO-->>Pagamentos: Pagamento criado
+    Pagamentos-->>Aluno: Exibe protocolo da transação
+    Pagamentos->>Pagamentos: Atualiza lista (status = PAGA)
+```

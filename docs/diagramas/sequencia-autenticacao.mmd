@@ -1,0 +1,22 @@
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Usuario as Usuário
+    participant Login as TelaLogin
+    participant DAO as UsuarioDAO
+    participant DB as MySQL
+
+    Usuario->>Login: Informa usuário (ou e-mail) e senha
+    Login->>DAO: autenticar(login, senha)
+    DAO->>DB: SELECT * FROM USUARIO WHERE usuario = ? OR email = ?
+    DB-->>DAO: Retorna usuário (com senha_hash)
+    DAO->>DAO: BCrypt.checkpw(senha, senha_hash)
+    alt Senha válida
+        DAO-->>Login: Optional<Usuario> presente
+        Login->>Login: Salva preferência "Lembrar de mim" (se marcado)
+        Login->>Usuario: Abre TelaPrincipal (perfil correspondente)
+    else Senha inválida
+        DAO-->>Login: Optional.empty()
+        Login-->>Usuario: "Usuário ou senha inválidos."
+    end
+```

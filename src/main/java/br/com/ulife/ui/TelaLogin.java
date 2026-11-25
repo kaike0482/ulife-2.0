@@ -190,7 +190,7 @@ public class TelaLogin extends JFrame {
         esqueci.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Estilo.aviso(TelaLogin.this, "Recuperação de senha: procure a secretaria ou um administrador do sistema.");
+                Estilo.aviso(TelaLogin.this, "Recuperação de senha: procure um administrador do sistema.");
             }
         });
         opcoes.add(chkLembrar, BorderLayout.WEST);
