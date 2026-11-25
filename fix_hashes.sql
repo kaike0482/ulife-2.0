@@ -1,0 +1,2 @@
+UPDATE USUARIO SET senha_hash = '$2a$10$Hta8JO8z.kFLdHl1pi8fn.6h6MeAgd57awI6V3JaRvRTy3YTJC2zq' WHERE email IN ('admin@ulife.com', 'aluno@ulife.com', 'prof@ulife.com');
+SELECT email, senha_hash FROM USUARIO;
